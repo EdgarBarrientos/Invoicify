@@ -16,7 +16,7 @@ public class InvoiceDetails
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     Long invoiceId;
-    @ManyToOne()
+    @OneToOne
     Items lineItem;
     Double totalPrice;
 

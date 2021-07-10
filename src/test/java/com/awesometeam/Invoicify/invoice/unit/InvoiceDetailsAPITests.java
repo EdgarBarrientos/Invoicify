@@ -1,6 +1,7 @@
-package com.awesometeam.Invoicify.unit;
+package com.awesometeam.Invoicify.invoice.unit;
 
 import com.awesometeam.Invoicify.company.service.CompanyService;
+import com.awesometeam.Invoicify.invoice.controller.InvoiceController;
 import com.awesometeam.Invoicify.invoice.model.InvoiceDetails;
 import com.awesometeam.Invoicify.invoice.model.Items;
 import com.awesometeam.Invoicify.invoice.service.InvoiceDetailsService;
@@ -18,13 +19,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.awesometeam.Invoicify.invoice.utility.Helper.getJSON;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@WebMvcTest(InvoiceController.class)
 public class InvoiceDetailsAPITests
 {
     @Autowired
@@ -60,10 +62,6 @@ public class InvoiceDetailsAPITests
                 .andExpect(status().isOk());
 
 
-    }
-    public String getJSON(String path) throws Exception {
-        Path paths = Paths.get(path);
-        return new String(Files.readAllBytes(paths));
     }
 
 }

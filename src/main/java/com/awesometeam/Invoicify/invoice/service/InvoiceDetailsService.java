@@ -1,19 +1,17 @@
 package com.awesometeam.Invoicify.invoice.service;
 
-import com.awesometeam.Invoicify.company.repository.CompanyRepository;
 import com.awesometeam.Invoicify.invoice.model.InvoiceDetails;
+import com.awesometeam.Invoicify.invoice.repository.InvoiceDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class InvoiceDetailsService {
-
     @Autowired
-    InvoiceDetailsService repo;
+    InvoiceDetailsRepository invoiceDetailsRepository;
 
-
-    public void addNewLineItem(InvoiceDetails invoiceDetails)
+    public InvoiceDetails addNewLineItem(InvoiceDetails invoiceDetails)
     {
-
+        return invoiceDetailsRepository.save(invoiceDetails);
     }
 }

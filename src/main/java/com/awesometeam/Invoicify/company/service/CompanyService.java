@@ -14,4 +14,8 @@ public class CompanyService {
     public Company Add(Company company) {
         return repo.save(company);
     }
+
+    public String findByName(String Name) {
+        return repo.findByName(Name);
+    }
 }

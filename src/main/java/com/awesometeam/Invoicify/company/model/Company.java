@@ -20,7 +20,8 @@ public class Company {
 
     public String Name;
     public String Address;
-    @ManyToOne()
+
+    @OneToOne
     public Contact Contact;
 
     @Override

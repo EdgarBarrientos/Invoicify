@@ -25,3 +25,19 @@ This project will be using below features
 4. Github work flow
 5. Heroku work flow
 6. Restdocs/ Asciidoctor for API documentation
+
+#
+This project will run locally by doing the following:
+1. docker build -t <image-name> .
+2. docker-compose up 
+3. If you want to test db connectivity to either H2 or Postgres profile, you can set the active profile in SPRING_PROFILES_ACTIVE.
+4. Make sure that the Dockerfile includes the following (within Windows Environment):
+  - RUN apt-get update && apt-get install -y dos2unix
+  - RUN dos2unix gradlew
+5. If the app runs in Heroku, add the following to Dockerfile:
+  - RUN chmod +x ./gradlew
+  
+
+
+  
+  

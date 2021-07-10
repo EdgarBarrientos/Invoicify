@@ -1,5 +1,6 @@
 package com.awesometeam.Invoicify.unit;
 
+import com.awesometeam.Invoicify.company.service.CompanyService;
 import com.awesometeam.Invoicify.invoice.model.InvoiceDetails;
 import com.awesometeam.Invoicify.invoice.model.Items;
 import com.awesometeam.Invoicify.invoice.service.InvoiceDetailsService;
@@ -31,6 +32,9 @@ public class InvoiceDetailsAPITests
 
     @MockBean
     InvoiceDetailsService service;
+
+    @MockBean
+    CompanyService companyService;
 
     @Test
     void addNewLineItemsTest() throws Exception

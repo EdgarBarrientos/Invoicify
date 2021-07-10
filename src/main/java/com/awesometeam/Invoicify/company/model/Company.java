@@ -3,10 +3,7 @@ package com.awesometeam.Invoicify.company.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -14,12 +11,16 @@ import java.util.Objects;
 @Getter
 public class Company {
 
+    public Company() {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long Id;
 
     public String Name;
     public String Address;
+    @ManyToOne()
     public Contact Contact;
 
     @Override

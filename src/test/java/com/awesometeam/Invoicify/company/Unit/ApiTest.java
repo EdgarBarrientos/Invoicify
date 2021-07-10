@@ -3,6 +3,7 @@ package com.awesometeam.Invoicify.company.Unit;
 import com.awesometeam.Invoicify.company.model.Company;
 import com.awesometeam.Invoicify.company.model.Contact;
 import com.awesometeam.Invoicify.company.service.CompanyService;
+import com.awesometeam.Invoicify.invoice.service.InvoiceDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class ApiTest {
 
     @MockBean
     CompanyService service;
+
+    @MockBean
+    InvoiceDetailsService invoiceDetailsService;
 
     @Test
     void  checkAddCompany(  ) throws Exception{

@@ -1,4 +1,4 @@
-package com.awesometeam.Invoicify.Domain;
+package com.awesometeam.Invoicify.company.model;
 
 import lombok.Getter;
 import lombok.Setter;

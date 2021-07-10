@@ -3,7 +3,11 @@
 FROM openjdk:11.0-jdk-slim as builder
 VOLUME /tmp
 COPY . .
-RUN apt-get update && apt-get install -y dos2unix
+#RUN apt-get install -y dos2unix
+RUN apt-get -y update
+RUN apt-get install -y dos2unix
+#RUN rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && apt-get install -y dos2unix
 RUN dos2unix gradlew
 RUN chmod +x ./gradlew
 RUN ./gradlew build

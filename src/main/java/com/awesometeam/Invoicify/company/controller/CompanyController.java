@@ -1,7 +1,7 @@
-package com.awesometeam.Invoicify.controller;
+package com.awesometeam.Invoicify.company.controller;
 
-import com.awesometeam.Invoicify.Domain.Company;
-import com.awesometeam.Invoicify.Service.CompanyService;
+import com.awesometeam.Invoicify.company.model.Company;
+import com.awesometeam.Invoicify.company.service.CompanyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

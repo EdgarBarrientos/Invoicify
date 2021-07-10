@@ -1,9 +1,9 @@
-package com.awesometeam.Invoicify.Unit;
+package com.awesometeam.Invoicify.company.Unit;
 
-import com.awesometeam.Invoicify.Domain.Company;
-import com.awesometeam.Invoicify.Domain.Contact;
-import com.awesometeam.Invoicify.Repository.CompanyRepository;
-import com.awesometeam.Invoicify.Service.CompanyService;
+import com.awesometeam.Invoicify.company.model.Company;
+import com.awesometeam.Invoicify.company.model.Contact;
+import com.awesometeam.Invoicify.company.repository.CompanyRepository;
+import com.awesometeam.Invoicify.company.service.CompanyService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

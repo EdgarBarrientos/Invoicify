@@ -1,0 +1,18 @@
+= Invoice Details API
+
+=== Add Line Item
+
+
+.request
+include::{snippets}/Add Invoice Item POST/http-request.adoc[]
+
+.request-fields
+include::{snippets}/Add Invoice Item POST/request-fields.adoc[]
+
+.response
+include::{snippets}/Add Invoice Item POST/http-response.adoc[]
+
+.response-fields
+include::{snippets}/Add Invoice Item POST/response-fields.adoc[]
+
+

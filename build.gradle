@@ -42,6 +42,8 @@ test {
 }
 
 asciidoctor {
+	sourceDir "src/docs/asciidoc"
+	attributes 'snippets': snippetsDir
 	inputs.dir snippetsDir
 	dependsOn test
 }

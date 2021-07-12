@@ -8,7 +8,8 @@ public class Helper {
 
     public static String getJSON(String path) throws Exception {
         Path paths = Paths.get(path);
-        return new String(Files.readAllBytes(paths));
+        String pathReturn = new String(Files.readAllBytes(paths));
+        return pathReturn;
     }
 
 }

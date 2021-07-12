@@ -46,7 +46,7 @@ public class InvoiceDetailsAPITests
         itemsList.add (new Items(2L,"item2",'R',10,5.0,0.0));
 
         InvoiceDetails invoiceDetails = new InvoiceDetails(itemsList.get(0),itemsList.get(0).getAmount());
-        System.out.println(itemsList.get(0).getId());
+
         String json = getJSON("src/test/resources/InvoiceLineItem.json");
 
         doAnswer(invocation -> {

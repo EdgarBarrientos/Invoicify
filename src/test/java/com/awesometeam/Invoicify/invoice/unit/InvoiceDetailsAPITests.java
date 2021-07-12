@@ -59,7 +59,7 @@ public class InvoiceDetailsAPITests
         this.mvc.perform(post("/addInvoiceItem")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
 
     }

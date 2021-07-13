@@ -11,6 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -53,6 +56,24 @@ public class ServiceTest {
 
         //Company currentResult2=companyService.Add(companyDup);
         //assertNull(currentResult2);
+    }
+
+    @Test
+    void etAllCompaniesTest() {
+        List<Company> companies = new ArrayList<>();
+        Company company = new Company();
+        company.setId(1l);
+        company.setName("Walmart");
+        company.setAddress("Greenspring Street");
+        Contact contact = new Contact();
+        contact.Name ="Peter Lee";
+        contact.Title="Associate";
+        contact.PhoneNumber ="123456789";
+        company.setContact(contact);
+        companies.add(company);
+        when(companyRepository.findAll()).thenReturn(companies);
+        List<Company> actual = companyService.findAll();
+        assertEquals(companies,actual);
     }
 
 }

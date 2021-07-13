@@ -13,11 +13,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -84,7 +87,7 @@ public class MockRepoTest {
                                 fieldWithPath("Contact.PhoneNumber").description("The name for the contact added for the company")
                         )
                         , responseFields(
-                                fieldWithPath("Id").description("Internal ID of the added company. For use with POST"),
+                                fieldWithPath("[]Id").description("Internal ID of the added company. For use with POST"),
                                 fieldWithPath("Name").description("The name of the added company"),
                                 fieldWithPath("Address").description("The address of the added company"),
                                 fieldWithPath("Contact").description("The contact of the company being added"),
@@ -97,6 +100,44 @@ public class MockRepoTest {
                         )
                         )
                 );
+
+    }
+
+    @Test
+    void getAllCompaniesTest() throws Exception {
+        List<Company> companies = new ArrayList<>();
+        Company company = new Company();
+        company.setId(1l);
+        company.setName("Walmart");
+        company.setAddress("Greenspring Street");
+
+        Contact contact = new Contact();
+        contact.setId(1l);
+        contact.Name ="Peter Lee";
+        contact.Title="Associate";
+        contact.PhoneNumber ="123456789";
+        company.setContact(contact);
+
+        companies.add(company);
+
+        when(repo.findAll()).thenReturn(companies);
+
+        mvc.perform(get("/company"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("length()").value(1))
+                .andExpect(jsonPath("[0]").value(companies.get(0)))
+                .andDo(document("company GET"
+                , responseFields(
+                        fieldWithPath("[]").description("An array of all Companies in the system"),
+                        fieldWithPath("[].Id").description("Internal ID of the added company"),
+                        fieldWithPath("[].Name").description("The name of the added company"),
+                        fieldWithPath("[].Address").description("The address of the added company"),
+                        fieldWithPath("[].Contact").description("The contact of the company being added"),
+                        fieldWithPath("[].Contact.Id").description("The ID for the contact added"),
+                        fieldWithPath("[].Contact.Name").description("The name for the contact added for the company"),
+                        fieldWithPath("[].Contact.Title").description("The name for the contact added for the company"),
+                        fieldWithPath("[].Contact.PhoneNumber").description("The name for the contact added for the company")))
+        );
 
     }
 }

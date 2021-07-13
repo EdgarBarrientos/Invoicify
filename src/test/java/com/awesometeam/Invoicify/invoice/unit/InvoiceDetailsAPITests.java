@@ -1,5 +1,6 @@
 package com.awesometeam.Invoicify.invoice.unit;
 
+import com.awesometeam.Invoicify.company.service.CompanyService;
 import com.awesometeam.Invoicify.invoice.controller.InvoiceController;
 import com.awesometeam.Invoicify.invoice.model.InvoiceDetails;
 import com.awesometeam.Invoicify.invoice.model.Items;
@@ -34,6 +35,9 @@ public class InvoiceDetailsAPITests
     @MockBean
     InvoiceDetailsService service;
 
+    @MockBean
+    CompanyService companyService;
+
     @Test
     void addNewLineItemsTest() throws Exception
     {
@@ -42,7 +46,7 @@ public class InvoiceDetailsAPITests
         itemsList.add (new Items(2L,"item2",'R',10,5.0,0.0));
 
         InvoiceDetails invoiceDetails = new InvoiceDetails(itemsList.get(0),itemsList.get(0).getAmount());
-        System.out.println(itemsList.get(0).getId());
+
         String json = getJSON("src/test/resources/InvoiceLineItem.json");
 
         doAnswer(invocation -> {
@@ -55,7 +59,7 @@ public class InvoiceDetailsAPITests
         this.mvc.perform(post("/addInvoiceItem")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
 
     }

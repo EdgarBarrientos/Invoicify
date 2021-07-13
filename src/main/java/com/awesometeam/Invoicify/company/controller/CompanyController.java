@@ -26,8 +26,8 @@ public class CompanyController {
         if (checkName !=null)
             return new ResponseEntity("Company Name should be unique",HttpStatus.BAD_REQUEST);
 
-        service.Add(company);
-        return new ResponseEntity(company, HttpStatus.CREATED);
+        //service.Add(company);
+        return new ResponseEntity(service.Add(company), HttpStatus.CREATED);
     }
 
 }

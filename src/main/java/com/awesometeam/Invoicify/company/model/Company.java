@@ -1,5 +1,7 @@
 package com.awesometeam.Invoicify.company.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,12 +18,17 @@ public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonProperty("Id")
     public long Id;
 
+    @JsonProperty("Name")
     public String Name;
+
+    @JsonProperty("Address")
     public String Address;
 
     @OneToOne
+    @JsonProperty("Contact")
     public Contact Contact;
 
     @Override
@@ -39,9 +46,9 @@ public class Company {
 
     public String toString() {
         return "Company{" +
-                "name='" + Name + '\'' +
-                ", address='" + Address + '\'' +
-                ", contact='" + Contact.toString() + '\'' +
+                "Name='" + Name + '\'' +
+                ", Address='" + Address + '\'' +
+                ", Contact='" + Contact.toString() + '\'' +
                 '}';
     }
 

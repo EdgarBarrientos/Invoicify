@@ -3,6 +3,7 @@ package com.awesometeam.Invoicify.company.Unit;
 import com.awesometeam.Invoicify.company.model.Company;
 import com.awesometeam.Invoicify.company.model.Contact;
 import com.awesometeam.Invoicify.company.repository.CompanyRepository;
+import com.awesometeam.Invoicify.company.repository.ContactRepository;
 import com.awesometeam.Invoicify.company.service.CompanyService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,13 +11,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ServiceTest {
     @Mock
     CompanyRepository companyRepository;
+    @Mock
+    ContactRepository contactRepository;
     @InjectMocks
     CompanyService companyService;
 
@@ -33,10 +36,23 @@ public class ServiceTest {
 
         company.Contact=contact;
 
+        Company companyDup= new Company();
+        companyDup.Name= "Acme Inc.";
+        companyDup.Address="324 Hogestown, Mechanicsburg, PA ";
+
+        companyDup.Contact=contact;
+
+        when(contactRepository.save(company.getContact())).thenReturn(company.getContact());
+        //when(contactRepository.save(companyDup.getContact())).thenReturn(null);
+
         when(companyRepository.save(company)).thenReturn(company);
+        //when(companyRepository.save(companyDup)).thenReturn(null);
 
         Company currentResult=companyService.Add(company);
         assertEquals(currentResult,company);
+
+        //Company currentResult2=companyService.Add(companyDup);
+        //assertNull(currentResult2);
     }
 
 }

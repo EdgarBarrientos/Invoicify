@@ -6,6 +6,7 @@ import com.awesometeam.Invoicify.company.repository.CompanyRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,6 +19,7 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-//@AutoConfigureRestDocs
+@AutoConfigureRestDocs
 public class MockRepoTest {
 
     @Autowired
@@ -56,31 +58,45 @@ public class MockRepoTest {
         doAnswer(invocation -> {
             Company p = invocation.getArgument(0);
             p.setId(1);
-            return null;
+            return p;
         }).when(repo).save(isA(Company.class));
 
         Map<String, Object> body = new HashMap<>();
-        body.put("name", adding.getName());
-        body.put("address", adding.getAddress());
-        body.put("contact", adding.getContact());
+        body.put("Name", adding.getName());
+        body.put("Address", adding.getAddress());
+        body.put("Contact", adding.getContact());
 
         mvc.perform(post("/company")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").value(1))
-                .andExpect(jsonPath("name").value("Acme Inc."))
-                .andExpect(jsonPath("address").value("322 Hogestown, Mechanicsburg, PA "));
-               /* .andDo(document("company POST"
+                .andExpect(jsonPath("Id").value(1))
+                .andExpect(jsonPath("Name").value("Acme Inc."))
+                .andExpect(jsonPath("Address").value("322 Hogestown, Mechanicsburg, PA "))
+                .andDo(document("company POST"
                         , requestFields(
-                                fieldWithPath("name").description("The name of the company being added"),
-                                fieldWithPath("address").description("The address of the company being added"))
-                        , responseFields(
-                                fieldWithPath("id").description("Internal ID of the added company. For use with POST"),
-                                fieldWithPath("name").description("The name of the added company"),
-                                fieldWithPath("address").description("The address of the added company"))
+                                fieldWithPath("Name").description("The name of the company being added"),
+                                fieldWithPath("Address").description("The address of the company being added"),
+                                fieldWithPath("Contact").description("The contact of the company being added"),
+                                fieldWithPath("Contact.Id").description("The ID for the contact added"),
+                                fieldWithPath("Contact.Name").description("The name for the contact added for the company"),
+                                fieldWithPath("Contact.Title").description("The name for the contact added for the company"),
+                                fieldWithPath("Contact.PhoneNumber").description("The name for the contact added for the company")
                         )
-                )*/
+                        , responseFields(
+                                fieldWithPath("Id").description("Internal ID of the added company. For use with POST"),
+                                fieldWithPath("Name").description("The name of the added company"),
+                                fieldWithPath("Address").description("The address of the added company"),
+                                fieldWithPath("Contact").description("The contact of the company being added"),
+                                fieldWithPath("Contact.Id").description("The ID for the contact added"),
+                                fieldWithPath("Contact.Name").description("The name for the contact added for the company"),
+                                fieldWithPath("Contact.Title").description("The name for the contact added for the company"),
+                                fieldWithPath("Contact.PhoneNumber").description("The name for the contact added for the company")
+
+
+                        )
+                        )
+                );
 
     }
 }

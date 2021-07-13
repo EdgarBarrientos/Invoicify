@@ -54,21 +54,21 @@ public class ApiTest {
         doAnswer(invocation -> {
             Company p = invocation.getArgument(0);
             p.setId(1);
-            return null;
+            return p;
         }).when(service).Add(isA(Company.class));
 
         Map<String, Object> body = new HashMap<>();
-        body.put("name", adding.getName());
-        body.put("address", adding.getAddress());
-        body.put("contact", adding.getContact());
+        body.put("Name", adding.getName());
+        body.put("Address", adding.getAddress());
+        body.put("Contact", adding.getContact());
 
         mvc.perform(post("/company")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").value(1))
-                .andExpect(jsonPath("name").value("Acme Inc."))
-                .andExpect(jsonPath("address").value("322 Hogestown, Mechanicsburg, PA "));
+                .andExpect(jsonPath("Id").value(1))
+                .andExpect(jsonPath("Name").value("Acme Inc."))
+                .andExpect(jsonPath("Address").value("322 Hogestown, Mechanicsburg, PA "));
 
     }
 

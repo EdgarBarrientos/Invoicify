@@ -6,6 +6,8 @@ import com.awesometeam.Invoicify.company.repository.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CompanyService {
 
@@ -23,4 +25,6 @@ public class CompanyService {
     public String findByName(String Name) {
         return repo.findByName(Name);
     }
+
+    public List<Company> findAll() { return repo.findAll();}
 }

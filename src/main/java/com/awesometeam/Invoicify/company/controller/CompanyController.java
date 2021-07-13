@@ -4,6 +4,7 @@ import com.awesometeam.Invoicify.company.model.Company;
 import com.awesometeam.Invoicify.company.service.CompanyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,4 +31,8 @@ public class CompanyController {
         return new ResponseEntity(service.Add(company), HttpStatus.CREATED);
     }
 
+    @GetMapping("/company")
+    public ResponseEntity<Iterable<Company>>  findAllCompanies() {
+        return new ResponseEntity(service.findAll(), HttpStatus.OK);
+    }
 }

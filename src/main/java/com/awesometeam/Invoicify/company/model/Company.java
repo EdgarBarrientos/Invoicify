@@ -11,12 +11,16 @@ import java.util.Objects;
 @Getter
 public class Company {
 
+    public Company() {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long Id;
 
     public String Name;
     public String Address;
+
     @OneToOne
     public Contact Contact;
 

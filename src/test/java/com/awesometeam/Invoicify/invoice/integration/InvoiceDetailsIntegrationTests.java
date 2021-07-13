@@ -15,15 +15,23 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.awesometeam.Invoicify.invoice.utility.Helper.getJSON;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import  com.awesometeam.Invoicify.invoice.model.*;
-import  com.awesometeam.Invoicify.invoice.controller.InvoiceController;
+
+import com.awesometeam.Invoicify.invoice.model.*;
+import com.awesometeam.Invoicify.invoice.controller.InvoiceController;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
@@ -40,21 +48,66 @@ public class InvoiceDetailsIntegrationTests {
     @Test
     void addNewLineItemTest() throws Exception {
         List<Items> itemsList = new ArrayList<>();
-        itemsList.add (new Items(1L,"item1",'F',0,0.0,20.0));
-        itemsList.add (new Items(2L,"item2",'R',10,5.0,0.0));
+        itemsList.add(new Items(1,"item1", 'F', 0, 1.0, 20.0));
+        //itemsList.add(new Items("item2", 'R', 10, 5.0, 0.0));
+        Items item = new Items(1,"item1", 'F', 0, 1.0, 20.0);
+        InvoiceDetails invoiceDetails2 = new InvoiceDetails();
+        invoiceDetails2.setLineItem(item);
+        invoiceDetails2.setTotalPrice(20.0);
 
-        InvoiceDetails invoiceDetails = new InvoiceDetails(itemsList.get(0),itemsList.get(0).getAmount());
-        System.out.println(itemsList.get(0).getId());
-        String json = getJSON("src/test/resources/InvoiceLineItem.json");
+        Map<String,Object> itemMap = new HashMap<>();
+        Map<String,Object> invoiceMap = new HashMap<>();
+        itemMap.put("id", 1);
+        itemMap.put("description", "item1");
+        itemMap.put("feeType", "F");
+        itemMap.put("quantity", 0);
+        itemMap.put("fee", 1.0);
+        itemMap.put("amount", 20.0);
+
+        invoiceMap.put("lineItem",itemMap);
+        invoiceMap.put("totalPrice","20");
+
+       // InvoiceDetails invoiceDetails = new InvoiceDetails(itemsList.get(0), itemsList.get(0).getAmount());
+       // String json = getJSON("src/test/resources/InvoiceLineItem.json");
 
         doAnswer(invocation -> {
             InvoiceDetails invoiceDetails1 = invocation.getArgument(0);
-            invoiceDetails1.setInvoiceId(1L);
+
+            invoiceDetails1.setInvoiceId(1);
+
             return invoiceDetails1;
         }).when(repo).save(isA(InvoiceDetails.class));
         this.mvc.perform(post("/addInvoiceItem")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isCreated());
+                .content(objectMapper.writeValueAsString(invoiceMap)))
+               // .content(json))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("totalPrice").value(20))
+               // .andExpect(jsonPath("$.lineItem.description").value("item1"))
+//                .andExpect(jsonPath("feeType").value("F"))
+//                .andExpect(jsonPath("fee").value("1L"))
+//                .andExpect(jsonPath("amount").value("20"))
+                .andDo(document("Add Invoice Item POST"
+                        , requestFields(
+                                fieldWithPath("lineItem").description("Line Item details"),
+                                fieldWithPath("lineItem.id").description("Internal ID of the added line item"),
+                                fieldWithPath("lineItem.description").description("Description of the line Item"),
+                                fieldWithPath("lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
+                                fieldWithPath("lineItem.quantity").description("Line item quantity"),
+                                fieldWithPath("lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
+                                fieldWithPath("lineItem.amount").description("This is line item amount/price"),
+                                fieldWithPath("totalPrice").description("Total price of the line item"))
+                        , responseFields(
+                                fieldWithPath("invoiceId").description("Internal ID of the added invoice"),
+                                fieldWithPath("lineItem").description("Line Item details"),
+                                fieldWithPath("lineItem.id").description("Internal ID of the added line item"),
+                                fieldWithPath("lineItem.description").description("Description of the line Item"),
+                                fieldWithPath("lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
+                                fieldWithPath("lineItem.quantity").description("Line item quantity"),
+                                fieldWithPath("lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
+                                fieldWithPath("lineItem.amount").description("This is line item amount/price"),
+                                fieldWithPath("totalPrice").description("Total price of the line item"))
+                        )
+                );
     }
 }

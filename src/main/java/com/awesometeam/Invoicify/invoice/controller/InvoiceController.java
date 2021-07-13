@@ -19,7 +19,9 @@ public class InvoiceController
     @PostMapping("/addInvoiceItem")
     public ResponseEntity<InvoiceDetails> addLineItem(@RequestBody InvoiceDetails invoiceDetails)
     {
-        invoiceDetails = service.addNewLineItem(invoiceDetails);
+
+       service.addNewLineItem(invoiceDetails);
+
         return new ResponseEntity<InvoiceDetails>(invoiceDetails, HttpStatus.CREATED);
     }
 

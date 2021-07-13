@@ -72,7 +72,9 @@ public class InvoiceDetailsIntegrationTests {
 
         doAnswer(invocation -> {
             InvoiceDetails invoiceDetails1 = invocation.getArgument(0);
+
             invoiceDetails1.setInvoiceId(1);
+
             return invoiceDetails1;
         }).when(repo).save(isA(InvoiceDetails.class));
         this.mvc.perform(post("/addInvoiceItem")

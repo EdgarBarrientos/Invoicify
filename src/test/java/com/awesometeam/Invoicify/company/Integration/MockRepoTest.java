@@ -87,7 +87,7 @@ public class MockRepoTest {
                                 fieldWithPath("Contact.PhoneNumber").description("The name for the contact added for the company")
                         )
                         , responseFields(
-                                fieldWithPath("[]Id").description("Internal ID of the added company. For use with POST"),
+                                fieldWithPath("Id").description("Internal ID of the added company. For use with POST"),
                                 fieldWithPath("Name").description("The name of the added company"),
                                 fieldWithPath("Address").description("The address of the added company"),
                                 fieldWithPath("Contact").description("The contact of the company being added"),

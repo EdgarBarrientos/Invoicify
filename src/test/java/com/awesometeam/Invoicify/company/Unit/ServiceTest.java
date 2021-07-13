@@ -59,7 +59,7 @@ public class ServiceTest {
     }
 
     @Test
-    void etAllCompaniesTest() {
+    void getAllCompaniesTest() {
         List<Company> companies = new ArrayList<>();
         Company company = new Company();
         company.setId(1l);

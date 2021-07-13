@@ -15,7 +15,8 @@ public class CompanyService {
     ContactRepository contactRepo;
 
     public Company Add(Company company) {
-        contactRepo.save(company.getContact());
+        if (company!=null && company.getContact()!=null)
+            contactRepo.save(company.getContact());
         return repo.save(company);
     }
 

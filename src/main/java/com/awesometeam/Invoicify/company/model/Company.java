@@ -13,13 +13,7 @@ import java.util.Objects;
 @Getter
 public class Company {
 
-    public Company(String name, String address, com.awesometeam.Invoicify.company.model.Contact contact) {
-        Name = name;
-        Address = address;
-        Contact = contact;
-    }
-
-
+    
     public Company() {
     }
 

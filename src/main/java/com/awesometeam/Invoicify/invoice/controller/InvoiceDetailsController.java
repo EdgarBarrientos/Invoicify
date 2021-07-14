@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-public class InvoiceController
+public class InvoiceDetailsController
 {
     @Autowired
     InvoiceDetailsService service;

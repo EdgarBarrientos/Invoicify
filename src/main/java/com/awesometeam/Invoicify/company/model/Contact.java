@@ -2,6 +2,7 @@ package com.awesometeam.Invoicify.company.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
 public class Contact {
 
     @Id
@@ -25,6 +27,12 @@ public class Contact {
     public String Title;
     @JsonProperty("PhoneNumber")
     public String PhoneNumber;
+
+    public Contact(String name, String title, String phoneNumber) {
+        Name = name;
+        Title = title;
+        PhoneNumber = phoneNumber;
+    }
 
     public String toString() {
         return "Company{" +

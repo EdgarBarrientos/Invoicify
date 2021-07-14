@@ -12,14 +12,23 @@ public class InvoiceDetails
 {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    long id;
     long invoiceId;
     @OneToOne
     Items lineItem;
     Double totalPrice;
 
-    public InvoiceDetails(Items lineItem, Double totalPrice) {
+    public InvoiceDetails(long invoiceId, Items lineItem, Double totalPrice) {
         this.lineItem = lineItem;
         this.totalPrice = totalPrice;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getInvoiceId() {

@@ -31,7 +31,7 @@ public class InvoiceDetailsServiceTests {
         List<Items> itemsList = new ArrayList<>();
         itemsList.add (new Items(1L,"item1",'F',0,0.0,20.0));
         itemsList.add (new Items(2L,"item2",'R',10,5.0,0.0));
-        InvoiceDetails invoiceDetails = new InvoiceDetails(itemsList.get(0),itemsList.get(0).getAmount());
+        InvoiceDetails invoiceDetails = new InvoiceDetails(1,itemsList.get(0),itemsList.get(0).getAmount());
         when(invoiceDetailsRepository.save(invoiceDetails)).thenReturn(invoiceDetails);
         InvoiceDetails actual = invoiceDetailsService.addNewLineItem(invoiceDetails);
         assertEquals(invoiceDetails, actual);

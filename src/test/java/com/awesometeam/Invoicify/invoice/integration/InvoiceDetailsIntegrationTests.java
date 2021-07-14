@@ -76,6 +76,9 @@ public class InvoiceDetailsIntegrationTests {
 
             invoiceDetails1.setId(1);
 
+            invoiceDetails1.setInvoiceId(1);
+
+
             return invoiceDetails1;
         }).when(repo).save(isA(InvoiceDetails.class));
         this.mvc.perform(post("/addInvoiceItem")

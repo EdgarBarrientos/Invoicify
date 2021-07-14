@@ -13,6 +13,13 @@ import java.util.Objects;
 @Getter
 public class Company {
 
+    public Company(String name, String address, com.awesometeam.Invoicify.company.model.Contact contact) {
+        Name = name;
+        Address = address;
+        Contact = contact;
+    }
+
+
     public Company() {
     }
 
@@ -24,11 +31,13 @@ public class Company {
     @JsonProperty("Name")
     public String Name;
 
+
     public Company(String name, String address, Contact contact) {
         Name = name;
         Address = address;
         Contact = contact;
     }
+
 
     @JsonProperty("Address")
     public String Address;

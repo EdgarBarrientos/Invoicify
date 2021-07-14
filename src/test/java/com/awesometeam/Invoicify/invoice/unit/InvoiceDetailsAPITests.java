@@ -46,7 +46,11 @@ public class InvoiceDetailsAPITests
 
         doAnswer(invocation -> {
             InvoiceDetails invoiceDetails1 = invocation.getArgument(0);
+
             invoiceDetails1.setId(1);
+
+            invoiceDetails1.setInvoiceId(1L);
+
             return invoiceDetails1;
         }).when(service).addNewLineItem(isA(InvoiceDetails.class));
 

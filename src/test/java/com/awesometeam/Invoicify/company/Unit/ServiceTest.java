@@ -74,6 +74,27 @@ public class ServiceTest {
         when(companyRepository.findAll()).thenReturn(companies);
         List<Company> actual = companyService.findAll();
         assertEquals(companies,actual);
+
+    }
+
+    @Test
+    void updateCompaniesTest() {
+        Company company = new Company();
+        company.setId(1);
+        company.setName("Walmart");
+        company.setAddress("Greenspring Street");
+        Contact contact = new Contact();
+        contact.Name ="Peter Lee";
+        contact.Title="Associate";
+        contact.PhoneNumber ="123456789";
+        company.setContact(contact);
+
+        when(companyRepository.save(company)).thenReturn(company);
+        when(contactRepository.save(company.getContact())).thenReturn(company.getContact());
+        when(companyRepository.findById(company.getId())).thenReturn(java.util.Optional.of(company));
+        Company actual = companyService.Update(company);
+        assertEquals(company,actual);
+
     }
 
 }

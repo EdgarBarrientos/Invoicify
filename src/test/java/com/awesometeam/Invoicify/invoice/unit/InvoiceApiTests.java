@@ -59,7 +59,7 @@ public class InvoiceApiTests {
                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("invoiceId").value(1))
-                .andExpect(jsonPath("cost").value(1.0));
+                .andExpect(jsonPath("cost").value(0.0));
     }
 
 }

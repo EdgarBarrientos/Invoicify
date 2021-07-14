@@ -31,6 +31,14 @@ public class Company {
     @JsonProperty("Name")
     public String Name;
 
+
+    public Company(String name, String address, Contact contact) {
+        Name = name;
+        Address = address;
+        Contact = contact;
+    }
+
+
     @JsonProperty("Address")
     public String Address;
 

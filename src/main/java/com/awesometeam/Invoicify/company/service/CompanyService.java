@@ -41,7 +41,9 @@ public class CompanyService {
 
     public List<Company> findAll() { return repo.findAll();}
 
+
     public Company findById(long id) {
         return  repo.findById(id).orElse(null);
     }
+
 }

@@ -74,6 +74,7 @@ public class ServiceTest {
         when(companyRepository.findAll()).thenReturn(companies);
         List<Company> actual = companyService.findAll();
         assertEquals(companies,actual);
+
     }
 
     @Test
@@ -93,6 +94,7 @@ public class ServiceTest {
         when(companyRepository.findById(company.getId())).thenReturn(java.util.Optional.of(company));
         Company actual = companyService.Update(company);
         assertEquals(company,actual);
+
     }
 
 }

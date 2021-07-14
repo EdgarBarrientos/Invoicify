@@ -73,6 +73,31 @@ public class ApiTest {
                 .andExpect(jsonPath("Name").value("Acme Inc."))
                 .andExpect(jsonPath("Address").value("322 Hogestown, Mechanicsburg, PA "));
 
+
+    }
+
+    @Test
+    void getAllCompaniesTest() throws Exception {
+        List<Company> companies = new ArrayList<>();
+        Company company = new Company();
+        company.setId(1l);
+        company.setName("Walmart");
+        company.setAddress("Greenspring Street");
+        Contact contact = new Contact();
+        contact.Name ="Peter Lee";
+        contact.Title="Associate";
+        contact.PhoneNumber ="123456789";
+        company.setContact(contact);
+        companies.add(company);
+
+
+        when(service.findAll()).thenReturn(companies);
+
+
+        mvc.perform(get("/company"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("length()").value(1))
+                .andExpect(jsonPath("[0]").value(companies.get(0)));
     }
 
     @Test

@@ -27,13 +27,29 @@ public class InvoiceDetailsServiceTests {
     InvoiceDetailsService invoiceDetailsService;
 
     @Test
-    void addNewLineItemsTest() {
+    void addNewLineItemsTestWithFlatFee() {
         List<Items> itemsList = new ArrayList<>();
-        itemsList.add (new Items(1L,"item1",'F',0,0.0,20.0));
-        itemsList.add (new Items(2L,"item2",'R',10,5.0,0.0));
-        InvoiceDetails invoiceDetails = new InvoiceDetails(1,itemsList.get(0),itemsList.get(0).getAmount());
+        itemsList.add (new Items(1,"item1",'F',0,0.0,20.0));
+        itemsList.add (new Items(2,"item2",'F',0,0.0,20.0));
+
+        InvoiceDetails invoiceDetails = new InvoiceDetails(1, itemsList.get(0),20.0);
+
         when(invoiceDetailsRepository.save(invoiceDetails)).thenReturn(invoiceDetails);
         InvoiceDetails actual = invoiceDetailsService.addNewLineItem(invoiceDetails);
         assertEquals(invoiceDetails, actual);
     }
+
+    @Test
+    void addNewLineItemsTestWithRate() {
+        List<Items> itemsList = new ArrayList<>();
+        itemsList.add (new Items(1,"item1",'R',5,10.0,0.0));
+        itemsList.add (new Items(2,"item2",'R',5,20.0,0.0));
+
+        InvoiceDetails invoiceDetails = new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee());
+
+        when(invoiceDetailsRepository.save(invoiceDetails)).thenReturn(invoiceDetails);
+        InvoiceDetails actual = invoiceDetailsService.addNewLineItem(invoiceDetails);
+        assertEquals(invoiceDetails, actual);
+    }
+
 }

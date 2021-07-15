@@ -15,8 +15,10 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,5 +47,35 @@ public class InvoiceServiceTests {
 
         Invoice expected =invoiceService.createNewInvoices(invoice);
         assertEquals(expected,invoice);
+    }
+
+    @Test
+    void findInvoiceByInvoiceIdTest() throws Exception {
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+        Invoice invoice=new Invoice(1,company, new Date(2021,07,12)
+                ,"Unpaid",new Date (2021,07,12) ,1.0, null );
+
+        when(invoiceRepository.findById(1L)).thenReturn(Optional.of(invoice));
+
+        Invoice actual =invoiceService.findByInvoiceId(1);
+
+        assertEquals(actual,invoice);
+
+    }
+    @Test
+    void findInvoiceByInvoiceIdReturnsNotFoundTest() throws Exception {
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+        Invoice invoice=new Invoice(1,company, new Date(2021,07,12)
+                ,"Unpaid",new Date (2021,07,12) ,1.0, null );
+
+        when(invoiceRepository.findById(2L)).thenReturn(Optional.of(invoice));
+
+        Invoice actual =invoiceService.findByInvoiceId(2);
+
+        assertEquals(actual,invoice);
+
+
     }
 }

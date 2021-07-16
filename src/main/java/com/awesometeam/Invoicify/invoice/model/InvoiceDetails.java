@@ -1,13 +1,13 @@
 package com.awesometeam.Invoicify.invoice.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class InvoiceDetails
 {
     @Id

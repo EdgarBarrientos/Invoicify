@@ -19,6 +19,7 @@ public class InvoiceDetails
     Double totalPrice;
 
     public InvoiceDetails(long invoiceId, Items lineItem, Double totalPrice) {
+       this.invoiceId=invoiceId;
         this.lineItem = lineItem;
         this.totalPrice = totalPrice;
     }

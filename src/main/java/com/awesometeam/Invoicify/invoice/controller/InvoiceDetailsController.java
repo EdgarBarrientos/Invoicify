@@ -16,13 +16,13 @@ public class InvoiceDetailsController
     @Autowired
     InvoiceDetailsService service;
 
-    @PostMapping("/addInvoiceItem")
-    public ResponseEntity<InvoiceDetails> addLineItem(@RequestBody InvoiceDetails invoiceDetails)
-    {
-
-       service.addNewLineItem(invoiceDetails);
-
-        return new ResponseEntity<InvoiceDetails>(invoiceDetails, HttpStatus.CREATED);
-    }
+//    @PostMapping("/addInvoiceItem")
+//    public ResponseEntity<InvoiceDetails> addLineItem(@RequestBody InvoiceDetails invoiceDetails)
+//    {
+//
+//       service.addNewLineItem(invoiceDetails);
+//
+//        return new ResponseEntity<InvoiceDetails>(invoiceDetails, HttpStatus.CREATED);
+//    }
 
 }

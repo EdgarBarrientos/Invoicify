@@ -69,22 +69,88 @@ public class InvoiceApiTests {
                 .andExpect(jsonPath("invoiceId").value(1))
                 .andExpect(jsonPath("cost").value(70.0));
     }
+
     @Test
-    void findInvoiceByInvoiceIdTest() throws Exception{
-        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
-        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
-        Invoice invoice=new Invoice(1,company, new Date(2021,07,12)
-                ,"Unpaid",new Date (2021,07,12) ,1.0, null );
+    void addNewLineItemsTestWithFlatFee() throws Exception
+    {
+        List<Items> itemsList = new ArrayList<>();
+        itemsList.add (new Items(1,"item1",'F',0,0.0,20.0));
+        itemsList.add (new Items(2,"item2",'F',0,0.0,20.0));
 
-        when(invoiceservice.findByInvoiceId(1)).thenReturn(invoice);
+        InvoiceDetails invoiceDetails = new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getAmount());
 
-        mvc.perform(get("/invoice/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("invoiceId").value(1))
-                .andExpect(jsonPath("status").value("Unpaid"))
-                .andExpect(jsonPath("$.company.Name").value("ABC..inc"))
-                .andExpect(jsonPath("cost").value(1.0));
+        Map<String, Object> requestBody= new HashMap<>();
+        requestBody.put("invoiceId", invoiceDetails.getInvoiceId());
+        requestBody.put("lineItem", invoiceDetails.getLineItem());
+        requestBody.put("totalPrice", invoiceDetails.getTotalPrice());
 
+
+        doAnswer(invocation -> {
+            InvoiceDetails invoiceDetails1 = invocation.getArgument(0);
+
+            invoiceDetails1.setId(1);
+
+            invoiceDetails1.setInvoiceId(1L);
+
+            return invoiceDetails1;
+        }).when(invoiceservice).addNewLineItem(isA(InvoiceDetails.class));
+
+        this.mvc.perform(post("/addInvoiceItem")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(status().isCreated());
     }
+
+    private void when(Invoice byInvoiceId) {
+    }
+
+    @Test
+    void addNewLineItemsTestWithRate() throws Exception
+    {
+        List<Items> itemsList = new ArrayList<>();
+        itemsList.add (new Items(1,"item1",'R',5,10.0,0.0));
+        itemsList.add (new Items(2,"item2",'R',5,20.0,0.0));
+
+        InvoiceDetails invoiceDetails = new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee());
+
+        Map<String, Object> requestBody= new HashMap<>();
+        requestBody.put("invoiceId", invoiceDetails.getInvoiceId());
+        requestBody.put("lineItem", invoiceDetails.getLineItem());
+        requestBody.put("totalPrice", invoiceDetails.getTotalPrice());
+
+        doAnswer(invocation -> {
+            InvoiceDetails invoiceDetails1 = invocation.getArgument(0);
+
+            invoiceDetails1.setId(1);
+
+            invoiceDetails1.setInvoiceId(1L);
+
+            return invoiceDetails1;
+        }).when(invoiceservice).addNewLineItem(isA(InvoiceDetails.class));
+
+        //when(service.addNewLineItem(invoiceDetails)).thenReturn(invoiceDetails);
+        this.mvc.perform(post("/addInvoiceItem")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(status().isCreated());
+    }
+
+//    @Test
+//    void findInvoiceByInvoiceIdTest() throws Exception{
+//        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+//        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+//        Invoice invoice=new Invoice(1,company, new Date(2021,07,12)
+//                ,"Unpaid",new Date (2021,07,12) ,1.0, null );
+//
+//        when(invoiceservice.findByInvoiceId(1)).thenReturn(invoice);
+//
+//        mvc.perform(get("/invoice/1"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("invoiceId").value(1))
+//                .andExpect(jsonPath("status").value("Unpaid"))
+//                .andExpect(jsonPath("$.company.Name").value("ABC..inc"))
+//                .andExpect(jsonPath("cost").value(1.0));
+//
+//    }
 
 }

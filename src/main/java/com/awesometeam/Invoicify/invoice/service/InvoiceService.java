@@ -27,35 +27,23 @@ public class InvoiceService {
 
     public Invoice createNewInvoices(Invoice invoice)
     {
-        //Invoice invoice1 = new Invoice(invoice.getCompany(), new Date(2021,07,12),invoice.getStatus()
-          //     ,new Date(2021,07,12),0.0,null);
-//        Invoice invoice=new Invoice(company, new Date(2021,07,12)
-//                ,"Unpaid",new Date (2021,07,12) ,0.0, null );
-        //System.out.println(invoice.getCompany() + invoice.getInvoiceDate().toString() +invoice.getStatus()
-          //      + invoice.getModifiedDate());
-        //System.out.println(invoice1.getCompany() + invoice1.getInvoiceDate().toString() +invoice1.getStatus()
-         //       + invoice1.getModifiedDate());
-        //System.out.println(invoice1.toString());
-        Invoice invoice2 = invoiceRepository.save(invoice);
-        return invoice2;
-//        if (invoice.getInvoiceDetailsList().size() != 0)
-//        {
-//            //List<InvoiceDetails> invoiceDetailsList1 = new ArrayList<>();
-//            System.out.println(invoice.getInvoiceDetailsList().size());
-//            double invoiceTotal = 0;
-//            for (InvoiceDetails invoiceLineItems:invoice.getInvoiceDetailsList())
-//            {
-////                invoiceLineItems.setInvoiceId(invoice2.getInvoiceId());
-////                invoiceDetailsService.addNewLineItem(invoiceLineItems);
-//                invoiceTotal += invoiceLineItems.getTotalPrice();
-//            }
-//            invoice.setCost(invoiceTotal);
-//        }
-//        invoiceRepository.updateCost(invoice.getInvoiceId(),invoice.getCost());
-//        return invoiceRepository.findById(invoice.getInvoiceId());
-
+               return invoiceRepository.save(invoice);
     }
 
+    public InvoiceDetails addNewLineItem(InvoiceDetails invoiceDetails)
+    {
+        if (invoiceDetails.getLineItem().getFeeType() == 'F'){
+            invoiceDetails.setTotalPrice(invoiceDetails.getLineItem().getAmount());
+        }
+        else{
+            invoiceDetails.setTotalPrice(invoiceDetails.getLineItem().getFee() * invoiceDetails.getLineItem().getQuantity());
+        }
+        System.out.println("invoice ID " + invoiceDetails.getInvoiceId());
+        double total = invoiceDetailsRepository.getCost(invoiceDetails.getInvoiceId()) + invoiceDetails.getTotalPrice() ;
+        System.out.println("total " + total);
+        invoiceRepository.updateCost(invoiceDetails.getInvoiceId(),total);
+        return invoiceDetailsRepository.save(invoiceDetails);
+    }
     public Invoice findByInvoiceId(long invoiceId) {
         Optional<Invoice> invoice = invoiceRepository.findById(invoiceId);
         return invoice.get();

@@ -10,13 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
@@ -79,6 +79,27 @@ public class InvoiceApiTests {
                 .andExpect(jsonPath("$.company.Name").value("ABC..inc"))
                 .andExpect(jsonPath("cost").value(1.0));
 
+    }
+
+    @Test
+    void findUnpaidInvoiceByCompany() throws Exception{
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+        Invoice invoice=new Invoice(1,company, new Date(2021,07,12)
+                ,"Unpaid",new Date (2021,07,12) ,1.0, null );
+        Invoice invoice2 =new Invoice(2,company, new Date(2021,07,11)
+                ,"Unpaid",new Date (2021,07,12) ,1.0, null );
+        List<Invoice> invoiceList = new ArrayList<>();
+        invoiceList.add(invoice2);
+        invoiceList.add(invoice);
+
+        Pageable paging = PageRequest.of(0, 10);
+        Page page = new PageImpl(invoiceList, paging, 10);
+        when(invoiceservice.findByCompanyIdAndStatus(1L, "Unpaid", 0, 10)).thenReturn(page);
+
+        mvc.perform(get("/invoiceByCompany/1"))
+                .andExpect(status().isOk())
+               .andExpect(jsonPath("$.content[0].invoiceId").value(2));
     }
 
 }

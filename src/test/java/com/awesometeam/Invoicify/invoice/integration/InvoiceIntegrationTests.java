@@ -7,6 +7,7 @@ import com.awesometeam.Invoicify.invoice.model.InvoiceDetails;
 import com.awesometeam.Invoicify.invoice.model.Items;
 import com.awesometeam.Invoicify.invoice.repository.InvoiceDetailsRepository;
 import com.awesometeam.Invoicify.invoice.repository.InvoiceRepository;
+import com.awesometeam.Invoicify.invoice.repository.ItemsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,12 +49,15 @@ public class InvoiceIntegrationTests {
     @MockBean
     InvoiceDetailsRepository repo;
 
+    @MockBean
+    ItemsRepository itemsRepository;
+
     @Test
     void createNewInvoice() throws Exception{
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
-        Invoice invoice=new Invoice(company, new Date(2021,07,12)
-                ,"Unpaid",new Date (2021,07,12) ,0.0, null );
+        Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.of (2021,07,12) ,0.0, null );
         Map<String, Object> requestBody= new HashMap<>();
         requestBody.put("company", invoice.getCompany());
         requestBody.put("invoiceDate", invoice.getInvoiceDate());
@@ -64,7 +68,7 @@ public class InvoiceIntegrationTests {
         doAnswer(invocation ->{
             Invoice inv=invocation.getArgument(0);
             inv.setInvoiceId(1);
-            return null;
+            return inv;
         }).when(invoiceRepository).save(isA(Invoice.class));
 
         mvc.perform(post("/createNewInvoice")
@@ -72,23 +76,23 @@ public class InvoiceIntegrationTests {
                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("invoiceId").value(1))
-                .andExpect(jsonPath("cost").value(0.0))
-                .andDo(document("Add Invoice POST"
-                                , requestFields(
-                                        fieldWithPath("company").description("Line Item details"),
-                                        fieldWithPath("company.Id").description("invoice to which the Line Item details added"),
-                                        fieldWithPath("company.Name").description("Internal ID of the added line item"),
-                                        fieldWithPath("company.Address").description("Description of the line Item"),
-                                        fieldWithPath("company.Contact").description("Fee type is either Flat Fee or Rate based fee"),
-                                        fieldWithPath("company.Contact.Id").description("Line item quantity"),
-                                        fieldWithPath("company.Contact.Name").description("Line item fee. This is Flat Fee/ Rate based fee"),
-                                        fieldWithPath("company.Contact.Title").description("This is line item amount/price"),
-                                        fieldWithPath("company.Contact.PhoneNumber").description("Total price of the line item"),
-                                        fieldWithPath("invoiceDate").description("Total price of the line item"),
-                                        fieldWithPath("modifiedDate").description("Total price of the line item"),
-                                        fieldWithPath("cost").description("Total price of the line item"),
-                                        fieldWithPath("invoiceDetailsList").description("Total price of the line item"),
-                                fieldWithPath("invoiceDetails").description("Total price of the line item"),
+                .andExpect(jsonPath("cost").value(0.0));
+//                .andDo(document("Add Invoice POST"
+//                                , requestFields(
+//                                        fieldWithPath("company").description("Line Item details"),
+//                                        fieldWithPath("company.Id").description("invoice to which the Line Item details added"),
+//                                        fieldWithPath("company.Name").description("Internal ID of the added line item"),
+//                                        fieldWithPath("company.Address").description("Description of the line Item"),
+//                                        fieldWithPath("company.Contact").description("Fee type is either Flat Fee or Rate based fee"),
+//                                        fieldWithPath("company.Contact.Id").description("Line item quantity"),
+//                                        fieldWithPath("company.Contact.Name").description("Line item fee. This is Flat Fee/ Rate based fee"),
+//                                        fieldWithPath("company.Contact.Title").description("This is line item amount/price"),
+//                                        fieldWithPath("company.Contact.PhoneNumber").description("Total price of the line item"),
+//                                        fieldWithPath("invoiceDate").description("Total price of the line item"),
+//                                        fieldWithPath("modifiedDate").description("Total price of the line item"),
+//                                        fieldWithPath("cost").description("Total price of the line item"),
+//                                        fieldWithPath("invoiceDetailsList").description("Total price of the line item"),
+//                                fieldWithPath("invoiceDetails").description("Total price of the line item"),
 //                                        fieldWithPath("invoiceDetails.invoiceId").description("invoice to which the Line Item details added"),
 //                                fieldWithPath("invoiceDetails.id").description("invoice to which the Line Item details added"),
 //                                fieldWithPath("invoiceDetails.lineItem.id").description("Internal ID of the added line item"),
@@ -99,24 +103,24 @@ public class InvoiceIntegrationTests {
 //                                fieldWithPath("invoiceDetails.lineItem.amount").description("This is line item amount/price"),
 //                                fieldWithPath("invoiceDetails.totalPrice").description("Total price of the line item"),
 //
-                                       fieldWithPath("status").description("Total price of the line item")),
-
-                                        responseFields(
-                                        fieldWithPath("invoiceId").description("Internal ID of the added invoice"),
-                fieldWithPath("company").description("Line Item details"),
-                fieldWithPath("company.Id").description("invoice to which the Line Item details added"),
-                fieldWithPath("company.Name").description("Internal ID of the added line item"),
-                fieldWithPath("company.Address").description("Description of the line Item"),
-                fieldWithPath("company.Contact").description("Fee type is either Flat Fee or Rate based fee"),
-                fieldWithPath("company.Contact.Id").description("Line item quantity"),
-                fieldWithPath("company.Contact.Name").description("Line item fee. This is Flat Fee/ Rate based fee"),
-                fieldWithPath("company.Contact.Title").description("This is line item amount/price"),
-                fieldWithPath("company.Contact.PhoneNumber").description("Total price of the line item"),
-        fieldWithPath("invoiceDate").description("Total price of the line item"),
-        fieldWithPath("modifiedDate").description("Total price of the line item"),
-        fieldWithPath("cost").description("Total price of the line item"),
-        fieldWithPath("invoiceDetailsList").description("Total price of the line item"),
-                                                fieldWithPath("invoiceDetails").description("Total price of the line item"),
+//                                       fieldWithPath("status").description("Total price of the line item")),
+//
+//                                        responseFields(
+//                                        fieldWithPath("invoiceId").description("Internal ID of the added invoice"),
+//                fieldWithPath("company").description("Line Item details"),
+//                fieldWithPath("company.Id").description("invoice to which the Line Item details added"),
+//                fieldWithPath("company.Name").description("Internal ID of the added line item"),
+//                fieldWithPath("company.Address").description("Description of the line Item"),
+//                fieldWithPath("company.Contact").description("Fee type is either Flat Fee or Rate based fee"),
+//                fieldWithPath("company.Contact.Id").description("Line item quantity"),
+//                fieldWithPath("company.Contact.Name").description("Line item fee. This is Flat Fee/ Rate based fee"),
+//                fieldWithPath("company.Contact.Title").description("This is line item amount/price"),
+//                fieldWithPath("company.Contact.PhoneNumber").description("Total price of the line item"),
+//        fieldWithPath("invoiceDate").description("Total price of the line item"),
+//        fieldWithPath("modifiedDate").description("Total price of the line item"),
+//        fieldWithPath("cost").description("Total price of the line item"),
+//        fieldWithPath("invoiceDetailsList").description("Total price of the line item"),
+//                                                fieldWithPath("invoiceDetails").description("Total price of the line item"),
 //
 //                                                fieldWithPath("invoiceDetails.invoiceId").description("invoice to which the Line Item details added"),
 //                                                fieldWithPath("invoiceDetails.id").description("invoice to which the Line Item details added"),
@@ -127,8 +131,8 @@ public class InvoiceIntegrationTests {
 //                                                fieldWithPath("invoiceDetails.lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
 //                                                fieldWithPath("invoiceDetails.lineItem.amount").description("This is line item amount/price"),
 //                                                fieldWithPath("invoiceDetails.totalPrice").description("Total price of the line item"),
-                                       fieldWithPath("status").description("Total price of the line item")
-                        )));
+//                                       fieldWithPath("status").description("Total price of the line item")
+//                        )));
     }
 
     @Test
@@ -137,37 +141,28 @@ public class InvoiceIntegrationTests {
         itemsList.add (new Items(1,"item1",'F',0,0.0,20.0));
         itemsList.add (new Items(2,"item2",'F',0,0.0,20.0));
 
-        Items item = new Items(1,"item1", 'F', 0, 1.0, 20.0);
-
         InvoiceDetails invoiceDetails = new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getAmount());
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+        Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.of (2021,07,12) ,0.0, null );
 
 
-//        Map<String,Object> itemMap = new HashMap<>();
-//
-//        Map<String,Object> invoiceMap = new HashMap<>();
-//        itemMap.put("id", 1);
-//        itemMap.put("description", "item1");
-//        itemMap.put("feeType", "F");
-//        itemMap.put("quantity", 0);
-//        itemMap.put("fee", 1.0);
-//        itemMap.put("amount", 20.0);
-//        invoiceMap.put("invoiceId",invoiceDetails.getInvoiceId());
-//        invoiceMap.put("lineItem",itemMap);
-//        invoiceMap.put("totalPrice",itemsList.get(0).getAmount() );
         Map<String, Object> requestBody= new HashMap<>();
         requestBody.put("invoiceId", invoiceDetails.getInvoiceId());
         requestBody.put("lineItem", invoiceDetails.getLineItem());
         requestBody.put("totalPrice", invoiceDetails.getTotalPrice());
 
-
+        doAnswer(invocation -> {
+            Invoice invoice1 = invocation.getArgument(0);
+            invoice1.setInvoiceId(1);
+            return invoice1;
+        }).when(invoiceRepository).save(isA(Invoice.class));
 
         doAnswer(invocation -> {
             InvoiceDetails invoiceDetails1 = invocation.getArgument(0);
-
             invoiceDetails1.setId(1);
-
             invoiceDetails1.setInvoiceId(1);
-
             return invoiceDetails1;
         }).when(repo).save(isA(InvoiceDetails.class));
 
@@ -175,31 +170,31 @@ public class InvoiceIntegrationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("totalPrice").value(20))
-                .andDo(document("Add Invoice Item POST"
-                        , requestFields(
-                                fieldWithPath("lineItem").description("Line Item details"),
-                                fieldWithPath("invoiceId").description("invoice to which the Line Item details added"),
-                                fieldWithPath("lineItem.id").description("Internal ID of the added line item"),
-                                fieldWithPath("lineItem.description").description("Description of the line Item"),
-                                fieldWithPath("lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
-                                fieldWithPath("lineItem.quantity").description("Line item quantity"),
-                                fieldWithPath("lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
-                                fieldWithPath("lineItem.amount").description("This is line item amount/price"),
-                                fieldWithPath("totalPrice").description("Total price of the line item"))
-                        , responseFields(
-                                fieldWithPath("id").description("Internal ID of the added invoice"),
-                                fieldWithPath("invoiceId").description("invoice to which the Line Item details added"),
-                                fieldWithPath("lineItem").description("Line Item details"),
-                                fieldWithPath("lineItem.id").description("Internal ID of the added line item"),
-                                fieldWithPath("lineItem.description").description("Description of the line Item"),
-                                fieldWithPath("lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
-                                fieldWithPath("lineItem.quantity").description("Line item quantity"),
-                                fieldWithPath("lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
-                                fieldWithPath("lineItem.amount").description("This is line item amount/price"),
-                                fieldWithPath("totalPrice").description("Total price of the line item"))
-                        )
-                );
+                .andExpect(jsonPath("totalPrice").value(20));
+//                .andDo(document("Add Invoice Item POST"
+//                        , requestFields(
+//                                fieldWithPath("lineItem").description("Line Item details"),
+//                                fieldWithPath("invoiceId").description("invoice to which the Line Item details added"),
+//                                fieldWithPath("lineItem.id").description("Internal ID of the added line item"),
+//                                fieldWithPath("lineItem.description").description("Description of the line Item"),
+//                                fieldWithPath("lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
+//                                fieldWithPath("lineItem.quantity").description("Line item quantity"),
+//                                fieldWithPath("lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
+//                                fieldWithPath("lineItem.amount").description("This is line item amount/price"),
+//                                fieldWithPath("totalPrice").description("Total price of the line item"))
+//                        , responseFields(
+//                                fieldWithPath("id").description("Internal ID of the added invoice"),
+//                                fieldWithPath("invoiceId").description("invoice to which the Line Item details added"),
+//                                fieldWithPath("lineItem").description("Line Item details"),
+//                                fieldWithPath("lineItem.id").description("Internal ID of the added line item"),
+//                                fieldWithPath("lineItem.description").description("Description of the line Item"),
+//                                fieldWithPath("lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
+//                                fieldWithPath("lineItem.quantity").description("Line item quantity"),
+//                                fieldWithPath("lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
+//                                fieldWithPath("lineItem.amount").description("This is line item amount/price"),
+//                                fieldWithPath("totalPrice").description("Total price of the line item"))
+//                        )
+//                );
     }
 
     @Test
@@ -209,21 +204,26 @@ public class InvoiceIntegrationTests {
         itemsList.add (new Items(2,"item2",'R',5,20.0,0.0));
 
         InvoiceDetails invoiceDetails = new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee());
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+        Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.of (2021,07,12) ,0.0, null );
 
         Map<String, Object> requestBody= new HashMap<>();
         requestBody.put("invoiceId", invoiceDetails.getInvoiceId());
         requestBody.put("lineItem", invoiceDetails.getLineItem());
         requestBody.put("totalPrice", invoiceDetails.getTotalPrice());
 
-
+        doAnswer(invocation -> {
+            Invoice invoice1 = invocation.getArgument(0);
+            invoice1.setInvoiceId(1);
+            return invoice1;
+        }).when(invoiceRepository).save(isA(Invoice.class));
 
         doAnswer(invocation -> {
             InvoiceDetails invoiceDetails1 = invocation.getArgument(0);
-
             invoiceDetails1.setId(1);
-
             invoiceDetails1.setInvoiceId(1);
-
             return invoiceDetails1;
         }).when(repo).save(isA(InvoiceDetails.class));
 
@@ -231,39 +231,39 @@ public class InvoiceIntegrationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("totalPrice").value(50))
-                .andDo(document("Add Invoice Item POST"
-                        , requestFields(
-                                fieldWithPath("lineItem").description("Line Item details"),
-                                fieldWithPath("invoiceId").description("invoice to which the Line Item details added"),
-                                fieldWithPath("lineItem.id").description("Internal ID of the added line item"),
-                                fieldWithPath("lineItem.description").description("Description of the line Item"),
-                                fieldWithPath("lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
-                                fieldWithPath("lineItem.quantity").description("Line item quantity"),
-                                fieldWithPath("lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
-                                fieldWithPath("lineItem.amount").description("This is line item amount/price"),
-                                fieldWithPath("totalPrice").description("Total price of the line item"))
-                        , responseFields(
-                                fieldWithPath("id").description("Internal ID of the added invoice"),
-                                fieldWithPath("invoiceId").description("invoice to which the Line Item details added"),
-                                fieldWithPath("lineItem").description("Line Item details"),
-                                fieldWithPath("lineItem.id").description("Internal ID of the added line item"),
-                                fieldWithPath("lineItem.description").description("Description of the line Item"),
-                                fieldWithPath("lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
-                                fieldWithPath("lineItem.quantity").description("Line item quantity"),
-                                fieldWithPath("lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
-                                fieldWithPath("lineItem.amount").description("This is line item amount/price"),
-                                fieldWithPath("totalPrice").description("Total price of the line item"))
-                        )
-                );
+                .andExpect(jsonPath("totalPrice").value(50));
+//                .andDo(document("Add Invoice Item POST"
+//                        , requestFields(
+//                                fieldWithPath("lineItem").description("Line Item details"),
+//                                fieldWithPath("invoiceId").description("invoice to which the Line Item details added"),
+//                                fieldWithPath("lineItem.id").description("Internal ID of the added line item"),
+//                                fieldWithPath("lineItem.description").description("Description of the line Item"),
+//                                fieldWithPath("lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
+//                                fieldWithPath("lineItem.quantity").description("Line item quantity"),
+//                                fieldWithPath("lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
+//                                fieldWithPath("lineItem.amount").description("This is line item amount/price"),
+//                                fieldWithPath("totalPrice").description("Total price of the line item"))
+//                        , responseFields(
+//                                fieldWithPath("id").description("Internal ID of the added invoice"),
+//                                fieldWithPath("invoiceId").description("invoice to which the Line Item details added"),
+//                                fieldWithPath("lineItem").description("Line Item details"),
+//                                fieldWithPath("lineItem.id").description("Internal ID of the added line item"),
+//                                fieldWithPath("lineItem.description").description("Description of the line Item"),
+//                                fieldWithPath("lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
+//                                fieldWithPath("lineItem.quantity").description("Line item quantity"),
+//                                fieldWithPath("lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
+//                                fieldWithPath("lineItem.amount").description("This is line item amount/price"),
+//                                fieldWithPath("totalPrice").description("Total price of the line item"))
+//                        )
+//                );
     }
 
     @Test
     void findInvoiceByInvoiceIdTest() throws Exception{
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
-        Invoice invoice=new Invoice(1,company, new Date(2021,07,12)
-                ,"Unpaid",new Date (2021,07,12) ,1.0, null );
+        Invoice invoice=new Invoice(1,company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.of (2021,07,12) ,1.0, null );
 
         when(invoiceRepository.findById(1L)).thenReturn(Optional.of(invoice));
 

@@ -16,9 +16,9 @@ public class InvoiceDetails
     long invoiceId;
     @OneToOne
     Items lineItem;
-    Double totalPrice;
+    double totalPrice;
 
-    public InvoiceDetails(long invoiceId, Items lineItem, Double totalPrice) {
+    public InvoiceDetails(long invoiceId, Items lineItem, double totalPrice) {
        this.invoiceId=invoiceId;
         this.lineItem = lineItem;
         this.totalPrice = totalPrice;

@@ -46,8 +46,8 @@ public class InvoiceApiTests {
         List<InvoiceDetails> invoiceDetailsList = new ArrayList<>();
         invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee()));
         invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(1),itemsList.get(1).getAmount()));
-        Invoice invoice=new Invoice(company, new Date(2021,07,12)
-                ,"Unpaid",new Date (2021,07,12) ,70.0, invoiceDetailsList );
+        Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.of (2021,07,12) ,70.0, invoiceDetailsList );
         Map<String, Object> requestBody= new HashMap<>();
         requestBody.put("company", invoice.getCompany());
         requestBody.put("invoiceDate", invoice.getInvoiceDate());
@@ -101,10 +101,7 @@ public class InvoiceApiTests {
                 .andExpect(status().isCreated());
     }
 
-    private void when(Invoice byInvoiceId) {
-    }
-
-    @Test
+     @Test
     void addNewLineItemsTestWithRate() throws Exception
     {
         List<Items> itemsList = new ArrayList<>();
@@ -135,22 +132,22 @@ public class InvoiceApiTests {
                 .andExpect(status().isCreated());
     }
 
-//    @Test
-//    void findInvoiceByInvoiceIdTest() throws Exception{
-//        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
-//        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
-//        Invoice invoice=new Invoice(1,company, new Date(2021,07,12)
-//                ,"Unpaid",new Date (2021,07,12) ,1.0, null );
-//
-//        when(invoiceservice.findByInvoiceId(1)).thenReturn(invoice);
-//
-//        mvc.perform(get("/invoice/1"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("invoiceId").value(1))
-//                .andExpect(jsonPath("status").value("Unpaid"))
-//                .andExpect(jsonPath("$.company.Name").value("ABC..inc"))
-//                .andExpect(jsonPath("cost").value(1.0));
-//
-//    }
+    @Test
+    void findInvoiceByInvoiceIdTest() throws Exception{
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+        Invoice invoice=new Invoice(1,company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.of (2021,07,12) ,1.0, null );
+
+        when(invoiceservice.findByInvoiceId(1)).thenReturn(invoice);
+
+        mvc.perform(get("/invoice/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("invoiceId").value(1))
+                .andExpect(jsonPath("status").value("Unpaid"))
+                .andExpect(jsonPath("$.company.Name").value("ABC..inc"))
+                .andExpect(jsonPath("cost").value(1.0));
+
+    }
 
 }

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-//import com.awesometeam.Invoicify.invoice.service.InvoiceDetailsService;
 
 @Service
 public class InvoiceService {
@@ -22,9 +21,6 @@ public class InvoiceService {
     @Autowired
     ItemsRepository itemsRepository;
 
-    @Autowired
-    InvoiceDetailsService invoiceDetailsService;
-
     public Invoice createNewInvoices(Invoice invoice)
     {
                return invoiceRepository.save(invoice);
@@ -32,6 +28,10 @@ public class InvoiceService {
 
     public InvoiceDetails addNewLineItem(InvoiceDetails invoiceDetails)
     {
+        if (invoiceDetails != null && invoiceDetails.getLineItem() != null) {
+            itemsRepository.save(invoiceDetails.getLineItem());
+        }
+
         if (invoiceDetails.getLineItem().getFeeType() == 'F'){
             invoiceDetails.setTotalPrice(invoiceDetails.getLineItem().getAmount());
         }
@@ -39,8 +39,15 @@ public class InvoiceService {
             invoiceDetails.setTotalPrice(invoiceDetails.getLineItem().getFee() * invoiceDetails.getLineItem().getQuantity());
         }
         System.out.println("invoice ID " + invoiceDetails.getInvoiceId());
-        double total = invoiceDetailsRepository.getCost(invoiceDetails.getInvoiceId()) + invoiceDetails.getTotalPrice() ;
-        System.out.println("total " + total);
+        double total = 0.0;
+        double prirorTotal = invoiceDetailsRepository.getCost(invoiceDetails.getInvoiceId());
+        System.out.println(prirorTotal);
+        if (prirorTotal == 0.0 )
+        {
+             total += invoiceDetailsRepository.getCost(invoiceDetails.getInvoiceId());
+
+        }
+            total += invoiceDetails.getTotalPrice();
         invoiceRepository.updateCost(invoiceDetails.getInvoiceId(),total);
         return invoiceDetailsRepository.save(invoiceDetails);
     }

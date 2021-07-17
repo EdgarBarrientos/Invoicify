@@ -8,7 +8,7 @@ import lombok.Setter;
 
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -22,14 +22,14 @@ public class Invoice {
     long invoiceId;
     @OneToOne
     Company company;
-    Date invoiceDate;
+    LocalDate invoiceDate;
     String Status;
-    Date modifiedDate;
+    LocalDate modifiedDate;
     double cost;
     @OneToMany(mappedBy = "invoiceId" )
     List<InvoiceDetails> invoiceDetailsList;
 
-    public Invoice(Company company, Date invoiceDate, String Status, Date modifiedDate, double cost, List<InvoiceDetails> invoiceDetailsList) {
+    public Invoice(Company company, LocalDate invoiceDate, String Status, LocalDate modifiedDate, double cost, List<InvoiceDetails> invoiceDetailsList) {
         this.company = company;
         this.invoiceDate = invoiceDate;
         this.Status = Status;

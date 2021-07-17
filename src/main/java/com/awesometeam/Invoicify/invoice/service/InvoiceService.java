@@ -68,7 +68,6 @@ public class InvoiceService {
     {
         if (invoice.getInvoiceDate() ==null && invoice.getStatus() ==null)
         {
-
         }
         else if(invoice.getInvoiceDate() !=null && invoice.getStatus() ==null)
         {

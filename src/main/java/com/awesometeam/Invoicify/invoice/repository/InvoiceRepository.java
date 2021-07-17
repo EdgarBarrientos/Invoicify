@@ -16,9 +16,18 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>
     @Query("update Invoice inv set inv.cost = :total where inv.invoiceId = :invoiceId")
     void updateCost(@Param("invoiceId")long invoiceId, @Param("total") double total);
 
-    void updateInvoiceDate(LocalDate invoiceDate, long invoiceId);
+    @Transactional
+    @Modifying
+    @Query("update Invoice inv set inv.invoiceDate = :invoiceDate where inv.invoiceId = :invoiceId")
+    void updateInvoiceDate(@Param("invoiceDate") LocalDate invoiceDate,@Param("invoiceId") long invoiceId);
 
-    void updateInvoiceStatus(String status, long invoiceId);
+    @Transactional
+    @Modifying
+    @Query("update Invoice inv set inv.Status = :status where inv.invoiceId = :invoiceId")
+  void updateInvoiceStatus(@Param("status") String status,@Param("invoiceId") long invoiceId);
 
-    void updateInvoiceDateAndStatus(String status, LocalDate invoiceDate, long invoiceId);
+    @Transactional
+    @Modifying
+    @Query("update Invoice inv set inv.Status = :status , inv.invoiceDate = :invoiceDate where inv.invoiceId = :invoiceId")
+  void updateInvoiceDateAndStatus(@Param("status")String status,@Param("invoiceDate")  LocalDate invoiceDate, @Param("invoiceId")long invoiceId);
 }

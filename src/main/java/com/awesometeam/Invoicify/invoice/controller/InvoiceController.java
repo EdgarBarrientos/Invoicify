@@ -23,8 +23,9 @@ public class InvoiceController {
     }
 
     @PatchMapping("/invoice/{invoiceId}")
-    public ResponseEntity <Invoice> modifyInvoice( @RequestBody Invoice invoice,@PathVariable long invoiceId){
-        Invoice result=invoiceService.modifyInvoice(invoice,invoiceId).orElse(null);
+    public ResponseEntity modifyInvoice( @RequestBody Invoice invoice,@PathVariable long invoiceId){
+
+            Invoice result=invoiceService.modifyInvoice(invoice,invoiceId).orElse(null);
              if(result != null)
                return new ResponseEntity(result, HttpStatus.OK);
             return new ResponseEntity(HttpStatus.NOT_FOUND);

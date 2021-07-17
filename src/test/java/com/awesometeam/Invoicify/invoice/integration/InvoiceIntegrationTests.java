@@ -10,6 +10,7 @@ import com.awesometeam.Invoicify.invoice.repository.InvoiceDetailsRepository;
 import com.awesometeam.Invoicify.invoice.repository.InvoiceRepository;
 import com.awesometeam.Invoicify.invoice.repository.ItemsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -19,6 +20,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -27,10 +30,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -328,6 +328,59 @@ public class InvoiceIntegrationTests {
                 .andExpect(jsonPath("$.content[0].itemsDetails[0].lineItem.quantity").value(0))
                 .andExpect(jsonPath("content.length()").value(listOfInvoices.size()));
 
+    }
+    @Test
+    void deleteInvoiceByInvoiceIdTest() throws Exception {
+        Contact contact = new Contact("Person1", "Sales Rep", "111-222-3333");
+        Company company = new Company("ABC..inc", "123 Street, Phoenix,AZ", contact);
+        Invoice invoice = new Invoice(1, company, LocalDate.of(2020, 07, 12)
+                , "Paid", LocalDate.of(2021, 07, 12), 1.0, null);
+
+        when(invoiceRepository.findById(1L)).thenReturn(Optional.of(invoice));
+        doNothing().when(invoiceRepository).deleteById(1L);
+
+        mvc.perform(delete("/deleteByInvoiceId/1"))
+                .andExpect(status().isOk());
+    }
+    @Test
+    void deleteInvoiceByInvoiceIdUnpaidTest() throws Exception {
+        Contact contact = new Contact("Person1", "Sales Rep", "111-222-3333");
+        Company company = new Company("ABC..inc", "123 Street, Phoenix,AZ", contact);
+        Invoice invoice = new Invoice(1, company, LocalDate.of(2020, 07, 12)
+                , "Unpaid", LocalDate.of(2021, 07, 12), 1.0, null);
+
+        when(invoiceRepository.findById(1L)).thenReturn(Optional.of(invoice));
+        doNothing().when(invoiceRepository).deleteById(1L);
+
+        mvc.perform(delete("/deleteByInvoiceId/1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteInvoiceByInvoiceIdNotGreaterThanOneYearTest() throws Exception {
+        Contact contact = new Contact("Person1", "Sales Rep", "111-222-3333");
+        Company company = new Company("ABC..inc", "123 Street, Phoenix,AZ", contact);
+        Invoice invoice = new Invoice(1, company, LocalDate.of(2021, 07, 12)
+                , "Paid", LocalDate.of(2021, 07, 12), 1.0, null);
+
+        when(invoiceRepository.findById(1L)).thenReturn(Optional.of(invoice));
+        doNothing().when(invoiceRepository).deleteById(1L);
+
+        mvc.perform(delete("/deleteByInvoiceId/1"))
+                .andExpect(status().isNotFound());
+    }
+    @Test
+    void deleteInvoiceByInvoiceIdNotExist() throws Exception {
+        Contact contact = new Contact("Person1", "Sales Rep", "111-222-3333");
+        Company company = new Company("ABC..inc", "123 Street, Phoenix,AZ", contact);
+        Invoice invoice = new Invoice(1, company, LocalDate.of(2021, 07, 12)
+                , "Paid", LocalDate.of(2021, 07, 12), 1.0, null);
+
+        when(invoiceRepository.findById(2L)).thenReturn(Optional.of(invoice));
+        doNothing().when(invoiceRepository).deleteById(2L);
+
+        mvc.perform(delete("/deleteByInvoiceId/2"))
+                .andExpect(status().isNotFound());
     }
 
 }

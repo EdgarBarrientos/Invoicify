@@ -39,9 +39,6 @@ public class ApiTest {
     @MockBean
     CompanyService service;
 
-    @MockBean
-    InvoiceDetailsService invoiceDetailsService;
-
     @Test
     void  checkAddCompany(  ) throws Exception{
         Company adding= new Company();

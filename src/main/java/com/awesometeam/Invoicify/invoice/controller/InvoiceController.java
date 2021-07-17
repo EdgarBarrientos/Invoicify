@@ -1,6 +1,7 @@
 package com.awesometeam.Invoicify.invoice.controller;
 
 import com.awesometeam.Invoicify.invoice.model.Invoice;
+import com.awesometeam.Invoicify.invoice.model.InvoiceDetails;
 import com.awesometeam.Invoicify.invoice.service.InvoiceService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class InvoiceController {
     InvoiceService invoiceService;
+
     public InvoiceController(InvoiceService invoiceService){
         this.invoiceService=invoiceService;
     }
@@ -20,6 +22,15 @@ public class InvoiceController {
     public ResponseEntity createNewInvoice(@RequestBody Invoice invoice){
         invoiceService.createNewInvoices(invoice);
         return new ResponseEntity(invoice, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/addInvoiceItem")
+    public ResponseEntity<InvoiceDetails> addLineItem(@RequestBody InvoiceDetails invoiceDetails)
+    {
+
+        invoiceService.addNewLineItem(invoiceDetails);
+
+        return new ResponseEntity<InvoiceDetails>(invoiceDetails, HttpStatus.CREATED);
     }
 
     @GetMapping("/invoice/{invoiceId}")

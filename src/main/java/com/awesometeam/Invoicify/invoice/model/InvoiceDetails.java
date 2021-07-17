@@ -1,13 +1,13 @@
 package com.awesometeam.Invoicify.invoice.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class InvoiceDetails
 {
     @Id
@@ -16,9 +16,10 @@ public class InvoiceDetails
     long invoiceId;
     @OneToOne
     Items lineItem;
-    Double totalPrice;
+    double totalPrice;
 
-    public InvoiceDetails(long invoiceId, Items lineItem, Double totalPrice) {
+    public InvoiceDetails(long invoiceId, Items lineItem, double totalPrice) {
+       this.invoiceId=invoiceId;
         this.lineItem = lineItem;
         this.totalPrice = totalPrice;
     }

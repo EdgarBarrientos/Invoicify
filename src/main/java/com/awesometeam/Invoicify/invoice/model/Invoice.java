@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,6 +33,16 @@ public class Invoice {
         this.company = company;
         this.invoiceDate = invoiceDate;
         this.Status = Status;
+        this.modifiedDate = modifiedDate;
+        this.cost = cost;
+        this.invoiceDetailsList = invoiceDetailsList;
+    }
+
+    public Invoice(long invoiceId, Company company, LocalDate invoiceDate, String status, LocalDate modifiedDate, double cost, List<InvoiceDetails> invoiceDetailsList) {
+        this.invoiceId = invoiceId;
+        this.company = company;
+        this.invoiceDate = invoiceDate;
+        Status = status;
         this.modifiedDate = modifiedDate;
         this.cost = cost;
         this.invoiceDetailsList = invoiceDetailsList;

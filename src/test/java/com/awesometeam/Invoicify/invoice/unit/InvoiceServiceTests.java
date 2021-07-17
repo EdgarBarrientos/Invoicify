@@ -18,8 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -153,5 +153,58 @@ public class InvoiceServiceTests {
         assertEquals(actual,invoice);
 
 
+    }
+    @Test
+    void modifyInvoiceDateTest()
+    {
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+
+        Invoice invoice=new Invoice(1,company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.of (2021,07,12) ,1.0, null );
+        Invoice invoice1=new Invoice(1,null, LocalDate.of(2021,12,12)
+                ,null,null ,0.0, null );
+
+        when(invoiceRepository.findById(isA(Long.class)))
+                .thenReturn(Optional.of(invoice))
+                .thenReturn(Optional.ofNullable(null));
+        Invoice result = invoiceService.modifyInvoice(invoice1,1).orElse(null);
+        assertEquals(invoice,result);
+    }
+    @Test
+    void modifyInvoiceStatusTest()
+    {
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+
+        Invoice invoice=new Invoice(1,company, LocalDate.of(2021,07,12)
+                ,"paid",LocalDate.of (2021,07,12) ,1.0, null );
+        Invoice invoice1=new Invoice(1,null, null
+                ,"paid",null ,0.0, null );
+
+        when(invoiceRepository.findById(isA(Long.class)))
+                .thenReturn(Optional.of(invoice))
+                .thenReturn(Optional.ofNullable(null));
+        Invoice result = invoiceService.modifyInvoice(invoice1,1).orElse(null);
+        assertEquals(invoice,result);
+    }
+    @Test
+    void modifyInvoiceDateAndStatusTest()
+    {
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+
+        Invoice invoice=new Invoice(1,company, LocalDate.of(2021,07,12)
+                ,"paid",LocalDate.of (2021,07,12) ,1.0, null );
+        Invoice invoice1=new Invoice(1,null, LocalDate.of(2021,12,12)
+                ,"paid",null ,0.0, null );
+
+        when(invoiceRepository.findById(isA(Long.class)))
+                .thenReturn(Optional.of(invoice))
+                .thenReturn(Optional.ofNullable(null));
+        Invoice result = invoiceService.modifyInvoice(invoice1,1).orElse(null);
+        assertEquals(invoice,result);
+        result = invoiceService.modifyInvoice(invoice1,12).orElse(null);
+        assertNull(result);
     }
 }

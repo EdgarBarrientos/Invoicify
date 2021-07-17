@@ -91,22 +91,21 @@ public class InvoiceIntegrationTests {
 //                                        fieldWithPath("company.Contact.PhoneNumber").description("Total price of the line item"),
 //                                        fieldWithPath("invoiceDate").description("Total price of the line item"),
 //                                        fieldWithPath("modifiedDate").description("Total price of the line item"),
-//                                        fieldWithPath("cost").description("Total price of the line item"),
-//                                        fieldWithPath("invoiceDetailsList").description("Total price of the line item"),
-//                                fieldWithPath("invoiceDetails").description("Total price of the line item"),
-//                                        fieldWithPath("invoiceDetails.invoiceId").description("invoice to which the Line Item details added"),
-//                                fieldWithPath("invoiceDetails.id").description("invoice to which the Line Item details added"),
-//                                fieldWithPath("invoiceDetails.lineItem.id").description("Internal ID of the added line item"),
-//                                fieldWithPath("invoiceDetails.lineItem.description").description("Description of the line Item"),
-//                                fieldWithPath("invoiceDetails.lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
-//                                fieldWithPath("invoiceDetails.lineItem.quantity").description("Line item quantity"),
-//                                fieldWithPath("invoiceDetails.lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
-//                                fieldWithPath("invoiceDetails.lineItem.amount").description("This is line item amount/price"),
-//                                fieldWithPath("invoiceDetails.totalPrice").description("Total price of the line item"),
+//                                        fieldWithPath("status").description("Total price of the line item"),
+//                                        fieldWithPath("invoiceDetails[].totalPrice").description("Total price of the line item"),
+//                                        fieldWithPath("invoiceDetails[].items").description("Total price of the line item"),
+//                                        fieldWithPath("invoiceDetails[].id").description("Total price of the line item"),
+//                                fieldWithPath("invoiceDetails[].items.id").description("Total price of the line item"),
+//                                fieldWithPath("invoiceDetails[].items.description").description("Total price of the line item"),
+//                                fieldWithPath("invoiceDetails[].items.feeType").description("Total price of the line item"),
+//                                fieldWithPath("invoiceDetails[].items.quantity").description("Total price of the line item"),
+//                                fieldWithPath("invoiceDetails[].items.fee").description("Total price of the line item"),
+//                                fieldWithPath("invoiceDetails[].items.amount").description("Total price of the line item"),
 //
-//                                       fieldWithPath("status").description("Total price of the line item")),
 //
-//                                        responseFields(
+//
+//                                fieldWithPath("cost").description("Total price of the line item")),
+//                                                                                responseFields(
 //                                        fieldWithPath("invoiceId").description("Internal ID of the added invoice"),
 //                fieldWithPath("company").description("Line Item details"),
 //                fieldWithPath("company.Id").description("invoice to which the Line Item details added"),
@@ -119,21 +118,8 @@ public class InvoiceIntegrationTests {
 //                fieldWithPath("company.Contact.PhoneNumber").description("Total price of the line item"),
 //        fieldWithPath("invoiceDate").description("Total price of the line item"),
 //        fieldWithPath("modifiedDate").description("Total price of the line item"),
-//        fieldWithPath("cost").description("Total price of the line item"),
-//        fieldWithPath("invoiceDetailsList").description("Total price of the line item"),
-//                                                fieldWithPath("invoiceDetails").description("Total price of the line item"),
+//        fieldWithPath("cost").description("Total price of the line item"))));
 //
-//                                                fieldWithPath("invoiceDetails.invoiceId").description("invoice to which the Line Item details added"),
-//                                                fieldWithPath("invoiceDetails.id").description("invoice to which the Line Item details added"),
-//                                                fieldWithPath("invoiceDetails.lineItem.id").description("Internal ID of the added line item"),
-//                                                fieldWithPath("invoiceDetails.lineItem.description").description("Description of the line Item"),
-//                                                fieldWithPath("invoiceDetails.lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
-//                                                fieldWithPath("invoiceDetails.lineItem.quantity").description("Line item quantity"),
-//                                                fieldWithPath("invoiceDetails.lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
-//                                                fieldWithPath("invoiceDetails.lineItem.amount").description("This is line item amount/price"),
-//                                                fieldWithPath("invoiceDetails.totalPrice").description("Total price of the line item"),
-//                                       fieldWithPath("status").description("Total price of the line item")
-//                        )));
     }
 
     @Test

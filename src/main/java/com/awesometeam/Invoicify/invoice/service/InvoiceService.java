@@ -64,7 +64,24 @@ public class InvoiceService {
         return invoice.get();
     }
 
-    public Invoice modifyInvoice(Invoice invoice,long invoiceId) {
-        return invoice;
+    public Optional <Invoice> modifyInvoice(Invoice invoice,long invoiceId)
+    {
+        if (invoice.getInvoiceDate() ==null && invoice.getStatus() ==null)
+        {
+
+        }
+        else if(invoice.getInvoiceDate() !=null && invoice.getStatus() ==null)
+        {
+            invoiceRepository.updateInvoiceDate(invoice.getInvoiceDate(),invoiceId);
+        }
+        else if(invoice.getInvoiceDate() ==null && invoice.getStatus() !=null)
+        {
+            invoiceRepository.updateInvoiceStatus(invoice.getStatus(),invoiceId);
+        }
+        else if (invoice.getInvoiceDate() != null && invoice.getStatus() !=null)
+        {
+            invoiceRepository.updateInvoiceDateAndStatus(invoice.getStatus(),invoice.getInvoiceDate(),invoiceId);
+        }
+        return invoiceRepository.findById(invoiceId);
     }
 }

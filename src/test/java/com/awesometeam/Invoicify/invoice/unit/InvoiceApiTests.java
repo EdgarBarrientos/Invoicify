@@ -3,6 +3,7 @@ package com.awesometeam.Invoicify.invoice.unit;
 import com.awesometeam.Invoicify.company.model.Company;
 import com.awesometeam.Invoicify.company.model.Contact;
 import com.awesometeam.Invoicify.invoice.controller.InvoiceController;
+import com.awesometeam.Invoicify.invoice.dto.DtoInvoiceDetails;
 import com.awesometeam.Invoicify.invoice.model.Invoice;
 import com.awesometeam.Invoicify.invoice.model.InvoiceDetails;
 import com.awesometeam.Invoicify.invoice.model.Items;
@@ -154,23 +155,55 @@ public class InvoiceApiTests {
 
     @Test
     void findUnpaidInvoiceByCompany() throws Exception{
+
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
-        Invoice invoice=new Invoice(1,company, new Date(2021,07,12)
-                ,"Unpaid",new Date (2021,07,12) ,1.0, null );
-        Invoice invoice2 =new Invoice(2,company, new Date(2021,07,11)
-                ,"Unpaid",new Date (2021,07,12) ,1.0, null );
-        List<Invoice> invoiceList = new ArrayList<>();
-        invoiceList.add(invoice2);
-        invoiceList.add(invoice);
+        Invoice invoice=new Invoice(company,  LocalDate.of(2021,07,21)
+                ,"Unpaid", LocalDate.of (2021,07,12) ,10.0, null );
+        Invoice invoice2=new Invoice(company,  LocalDate.of(2021,07,12)
+                ,"Unpaid", LocalDate.of (2021,07,21) ,15.0, null );
 
-        Pageable paging = PageRequest.of(0, 10);
-        Page page = new PageImpl(invoiceList, paging, 10);
+
+        List<Items> itemsListA = new ArrayList<>();
+        itemsListA.add (new Items("item1",'F',0,0.0,20.0));
+        itemsListA.add (new Items("item2",'R',10,5.0,0.0));
+
+        List<Items> itemsListB = new ArrayList<>();
+        itemsListB.add (new Items("item3",'F',0,0.0,20.0));
+        itemsListB.add (new Items("item4",'R',10,5.0,0.0));
+
+        InvoiceDetails invoiceDetailsA = new InvoiceDetails(1, itemsListA.get(0),itemsListA.get(0).getAmount());
+        InvoiceDetails invoiceDetailsB = new InvoiceDetails(2, itemsListB.get(0),itemsListB.get(0).getAmount());
+        InvoiceDetails invoiceDetailsC = new InvoiceDetails(1, itemsListA.get(1),itemsListA.get(1).getAmount());
+        InvoiceDetails invoiceDetailsD = new InvoiceDetails(2, itemsListB.get(1),itemsListB.get(1).getAmount());
+        invoice.setInvoiceDetailsList(Arrays.asList(invoiceDetailsA, invoiceDetailsC));
+        invoice2.setInvoiceDetailsList(Arrays.asList(invoiceDetailsB, invoiceDetailsD));
+
+        List<Invoice> listOfInvoices = new ArrayList<>();
+        listOfInvoices.add(invoice);
+        listOfInvoices.add(invoice2);
+        DtoInvoiceDetails dtoInvoiceDetail = new DtoInvoiceDetails();
+        dtoInvoiceDetail = dtoInvoiceDetail.mapInvoiceDetails(invoice);
+        DtoInvoiceDetails dtoInvoiceDetail2 = new DtoInvoiceDetails();
+        dtoInvoiceDetail2 = dtoInvoiceDetail2.mapInvoiceDetails(invoice2);
+        List<DtoInvoiceDetails> dtoInvoiceDetails = new ArrayList<>();
+        dtoInvoiceDetails.add(dtoInvoiceDetail);
+        dtoInvoiceDetails.add(dtoInvoiceDetail2);
+
+        Pageable paging = PageRequest.of(0, 10, Sort.by("invoiceDate").ascending());
+        Page page = new PageImpl(listOfInvoices, paging, 10);
         when(invoiceservice.findByCompanyIdAndStatus(1L, "Unpaid", 0, 10)).thenReturn(page);
 
         mvc.perform(get("/invoiceByCompany/1"))
                 .andExpect(status().isOk())
-               .andExpect(jsonPath("$.content[0].invoiceId").value(2));
+                .andExpect(jsonPath("$.content[0].id").value(dtoInvoiceDetails.get(0).getId().toString()))
+                .andExpect(jsonPath("$.content[0].createDate").value(dtoInvoiceDetails.get(0).getCreateDate().toString()))
+                .andExpect(jsonPath("$.content[0].total").value(dtoInvoiceDetails.get(0).getTotal()))
+                .andExpect(jsonPath("$.content[0].paidStatus").value(dtoInvoiceDetails.get(0).getPaidStatus()))
+                .andExpect(jsonPath("$.content[0].itemsDetails[0].lineItem.description").value("item1"))
+                .andExpect(jsonPath("$.content[0].itemsDetails[0].lineItem.feeType").value("F"))
+                .andExpect(jsonPath("$.content[0].itemsDetails[0].lineItem.quantity").value(0))
+                .andExpect(jsonPath("content.length()").value(listOfInvoices.size()));
     }
 
 }

@@ -6,6 +6,10 @@ import com.awesometeam.Invoicify.invoice.repository.InvoiceDetailsRepository;
 import com.awesometeam.Invoicify.invoice.repository.InvoiceRepository;
 import com.awesometeam.Invoicify.invoice.repository.ItemsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -55,4 +59,15 @@ public class InvoiceService {
         Optional<Invoice> invoice = invoiceRepository.findById(invoiceId);
         return invoice.get();
     }
+
+    public Page<Invoice> findByCompanyIdAndStatus(Long id, String status, int pageNo, int pageSize) {
+        Pageable page  = PageRequest.of(pageNo, pageSize, Sort.by("invoiceDate").ascending());
+        Page<Invoice> result = invoiceRepository.findByCompanyIdAndStatus(id, status, page);
+        if(result.getContent().isEmpty()) {
+            throw new RuntimeException();
+        }
+        return result;
+    }
+
+
 }

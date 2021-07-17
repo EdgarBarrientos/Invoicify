@@ -10,6 +10,7 @@ import com.awesometeam.Invoicify.invoice.repository.InvoiceDetailsRepository;
 import com.awesometeam.Invoicify.invoice.repository.InvoiceRepository;
 import com.awesometeam.Invoicify.invoice.repository.ItemsRepository;
 import com.awesometeam.Invoicify.invoice.service.InvoiceService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +23,9 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -177,7 +180,36 @@ public class InvoiceServiceTests {
         when(invoiceRepository.findByCompanyIdAndStatus(1L, "Unpaid", paging)).thenReturn(page);
         Page actual = invoiceService.findByCompanyIdAndStatus(1l, "Unpaid", 0, 10);
         assertEquals(listOfInvoices, actual.getContent());
+    }
 
+    @Test
+    void deleteInvoiceByInvoiceIdTest() throws Exception {
+        Contact contact = new Contact("Person1", "Sales Rep", "111-222-3333");
+        Company company = new Company("ABC..inc", "123 Street, Phoenix,AZ", contact);
+        Invoice invoice = new Invoice(1, company, LocalDate.of(2020, 07, 12)
+                , "Paid", LocalDate.of(2021, 07, 12), 1.0, null);
+
+        doNothing().when(invoiceRepository).deleteById(1L);
+        Assertions.assertDoesNotThrow(()->invoiceService.deleteByInvoice(invoice) );
 
     }
+    @Test
+    void deleteInvoiceByInvoiceIdUnpaidTest() throws Exception {
+        Contact contact = new Contact("Person1", "Sales Rep", "111-222-3333");
+        Company company = new Company("ABC..inc", "123 Street, Phoenix,AZ", contact);
+        Invoice invoice = new Invoice(1, company, LocalDate.of(2020, 07, 12)
+                , "Unpaid", LocalDate.of(2021, 07, 12), 1.0, null);
+
+        Assertions.assertThrows(RuntimeException.class, ()->invoiceService.deleteByInvoice(invoice));
+    }
+    @Test
+    void deleteInvoiceByInvoiceIdNotGreaterThanOneYearTest() throws Exception {
+        Contact contact = new Contact("Person1", "Sales Rep", "111-222-3333");
+        Company company = new Company("ABC..inc", "123 Street, Phoenix,AZ", contact);
+        Invoice invoice = new Invoice(1, company, LocalDate.of(2021, 07, 12)
+                , "Paid", LocalDate.of(2021, 07, 12), 1.0, null);
+
+        Assertions.assertThrows(RuntimeException.class, ()->invoiceService.deleteByInvoice(invoice));
+    }
+
 }

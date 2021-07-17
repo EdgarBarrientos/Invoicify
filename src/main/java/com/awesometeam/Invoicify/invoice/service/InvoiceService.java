@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -70,4 +71,16 @@ public class InvoiceService {
     }
 
 
+    public void deleteByInvoice(Invoice invoice) {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate invoiceDate = invoice.getInvoiceDate();
+        LocalDate invoiceDatePlusOneYear = invoiceDate.plusMonths(12);
+        int compareValue = invoiceDatePlusOneYear.compareTo(currentDate);
+
+        if(invoice.getStatus().equals("Paid") && compareValue < 0){
+            invoiceRepository.deleteById(invoice.getInvoiceId());
+        }else{
+            throw new RuntimeException();
+        }
+    }
 }

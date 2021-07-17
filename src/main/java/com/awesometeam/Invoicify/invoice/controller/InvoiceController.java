@@ -59,4 +59,22 @@ public class InvoiceController {
         return new ResponseEntity<>(new PageImpl<>(dtoInvoiceDetails, page.getPageable(), page.getTotalPages()), HttpStatus.OK);
     }
 
+    @DeleteMapping("/deleteByInvoiceId/{invoiceId}")
+    public ResponseEntity deleteByInvoiceId(@PathVariable long invoiceId){
+
+        Invoice invoice = invoiceService.findByInvoiceId(invoiceId);
+        if(invoice != null){
+            try {
+                invoiceService.deleteByInvoice(invoice);
+            }catch (RuntimeException exception){
+                return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+            }
+        }else{
+            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity(invoice, HttpStatus.OK);
+    }
+
+
 }

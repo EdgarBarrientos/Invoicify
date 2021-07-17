@@ -37,18 +37,44 @@ public class InvoiceServiceTests {
     InvoiceService invoiceService;
 
     @Test
-    void addNewInvoice() throws  Exception{
+    void addNewInvoiceWithNoItems() throws  Exception{
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+        List<Items> itemsList = new ArrayList<>();
+        itemsList.add (new Items(1,"item1",'R',5,10.0,0.0));
+        itemsList.add (new Items(2,"item2",'F',0,0.0,20.0));
+
+        Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.of (2021,07,12) ,0.0, null );
+
+        Map<String, Object> requestBody= new HashMap<>();
+
+        requestBody.put("company", invoice.getCompany());
+        requestBody.put("invoiceDate", invoice.getInvoiceDate());
+        requestBody.put("status", invoice.getStatus());
+        requestBody.put("modifiedDate", invoice.getInvoiceDate());
+        requestBody.put("cost", invoice.getCost());
+        requestBody.put("invoiceDetails", null);
+
+        when(invoiceRepository.save(invoice)).thenReturn(invoice);
+
+        Invoice expected =invoiceService.createNewInvoices(invoice);
+        assertEquals(expected,invoice);
+    }
+
+    @Test
+    void addNewInvoiceWithItems() throws  Exception{
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
         List<Items> itemsList = new ArrayList<>();
         itemsList.add (new Items(1,"item1",'R',5,10.0,0.0));
         itemsList.add (new Items(2,"item2",'F',0,0.0,20.0));
         List<InvoiceDetails> invoiceDetailsList = new ArrayList<>();
-        invoiceDetailsList.add(new InvoiceDetails(1,1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee()));
-        invoiceDetailsList.add(new InvoiceDetails(2,1, itemsList.get(1),itemsList.get(1).getAmount()));
+        invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee()));
+        invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(1),itemsList.get(1).getAmount()));
         Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
                 ,"Unpaid",LocalDate.of (2021,07,12) ,0.0, invoiceDetailsList );
-        //System.out.println(invoice.toString());
+
         Map<String, Object> requestBody= new HashMap<>();
 
         requestBody.put("company", invoice.getCompany());
@@ -57,14 +83,14 @@ public class InvoiceServiceTests {
         requestBody.put("modifiedDate", invoice.getInvoiceDate());
         requestBody.put("cost", invoice.getCost());
         requestBody.put("invoiceDetails", invoiceDetailsList);
-        //System.out.println(requestBody.get("invoiceDetails").toString());
 
         when(invoiceRepository.save(invoice)).thenReturn(invoice);
+        when(invoiceDetailsRepository.save(invoiceDetailsList.get(0))).thenReturn(invoiceDetailsList.get(0));
+        when(invoiceDetailsRepository.save(invoiceDetailsList.get(1))).thenReturn(invoiceDetailsList.get(1));
 
         Invoice expected =invoiceService.createNewInvoices(invoice);
         assertEquals(expected,invoice);
     }
-
 
     @Test
     void addNewLineItemsTestWithFlatFee() {
@@ -98,7 +124,6 @@ public class InvoiceServiceTests {
         InvoiceDetails actual = invoiceService.addNewLineItem(invoiceDetails);
         assertEquals(invoiceDetails, actual);
     }
-
 
     @Test
     void findInvoiceByInvoiceIdTest() throws Exception {

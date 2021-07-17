@@ -21,8 +21,7 @@ import java.util.*;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @WebMvcTest(InvoiceController.class)
@@ -150,4 +149,50 @@ public class InvoiceApiTests {
 
     }
 
+    @Test
+    void modifyInvoiceTest() throws Exception{
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+        List<Items> itemsList = new ArrayList<>();
+        itemsList.add (new Items(1,"item1",'R',5,10.0,0.0));
+        itemsList.add (new Items(2,"item2",'F',0,0.0,20.0));
+        List<InvoiceDetails> invoiceDetailsList = new ArrayList<>();
+        invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee()));
+        invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(1),itemsList.get(1).getAmount()));
+        Invoice invoice=new Invoice(1, company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.of (2021,07,12) ,70.0, invoiceDetailsList );
+
+        doAnswer(invocation ->{
+            Invoice inv=invocation.getArgument(0);
+            Long index= invocation.getArgument(1);
+            Invoice result=null;
+            if(index == 1){
+                result = new Invoice(1, company, LocalDate.of(2021,07,12)
+                        ,"Unpaid",LocalDate.of (2021,07,12) ,70.0, invoiceDetailsList );
+                if(inv.getInvoiceDate() != null){
+                    result.setInvoiceDate(inv.getInvoiceDate());
+                }
+                if(inv.getStatus() != null){
+                    result.setStatus(invoice.getStatus());
+                }
+            }
+            return result;
+        }).when(invoiceservice).modifyInvoice(isA(Invoice.class),isA(long.class));
+
+        Map<String, Object> requestBody= new HashMap<>();
+     //   requestBody.put("company", invoice.getCompany());
+        requestBody.put("invoiceDate",LocalDate.of(2021,07,17) );
+//        requestBody.put("status", invoice.getStatus());
+//        requestBody.put("modifiedDate", invoice.getInvoiceDate());
+//        requestBody.put("cost", invoice.getCost());
+//        requestBody.put("invoiceDetails", invoiceDetailsList);
+
+
+        mvc.perform(patch("/invoice/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("invoiceId").value(1))
+                .andExpect(jsonPath("invoiceDate").value(LocalDate.of(2021,07,17)));
+    }
 }

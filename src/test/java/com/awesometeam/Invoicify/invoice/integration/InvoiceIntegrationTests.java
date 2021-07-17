@@ -17,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -35,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-
 public class InvoiceIntegrationTests {
     @Autowired
     private MockMvc mvc;
@@ -53,7 +54,7 @@ public class InvoiceIntegrationTests {
     ItemsRepository itemsRepository;
 
     @Test
-    void createNewInvoice() throws Exception{
+    void createNewInvoiceWithNoItems() throws Exception{
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
         Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
@@ -77,6 +78,112 @@ public class InvoiceIntegrationTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("invoiceId").value(1))
                 .andExpect(jsonPath("cost").value(0.0));
+//                .andDo(document("Add Invoice POST"
+//                                , requestFields(
+//                                        fieldWithPath("company").description("Line Item details"),
+//                                        fieldWithPath("company.Id").description("invoice to which the Line Item details added"),
+//                                        fieldWithPath("company.Name").description("Internal ID of the added line item"),
+//                                        fieldWithPath("company.Address").description("Description of the line Item"),
+//                                        fieldWithPath("company.Contact").description("Fee type is either Flat Fee or Rate based fee"),
+//                                        fieldWithPath("company.Contact.Id").description("Line item quantity"),
+//                                        fieldWithPath("company.Contact.Name").description("Line item fee. This is Flat Fee/ Rate based fee"),
+//                                        fieldWithPath("company.Contact.Title").description("This is line item amount/price"),
+//                                        fieldWithPath("company.Contact.PhoneNumber").description("Total price of the line item"),
+//                                        fieldWithPath("invoiceDate").description("Total price of the line item"),
+//                                        fieldWithPath("modifiedDate").description("Total price of the line item"),
+//                                        fieldWithPath("cost").description("Total price of the line item"),
+//                                        fieldWithPath("invoiceDetailsList").description("Total price of the line item"),
+//                                fieldWithPath("invoiceDetails").description("Total price of the line item"),
+//                                        fieldWithPath("invoiceDetails.invoiceId").description("invoice to which the Line Item details added"),
+//                                fieldWithPath("invoiceDetails.id").description("invoice to which the Line Item details added"),
+//                                fieldWithPath("invoiceDetails.lineItem.id").description("Internal ID of the added line item"),
+//                                fieldWithPath("invoiceDetails.lineItem.description").description("Description of the line Item"),
+//                                fieldWithPath("invoiceDetails.lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
+//                                fieldWithPath("invoiceDetails.lineItem.quantity").description("Line item quantity"),
+//                                fieldWithPath("invoiceDetails.lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
+//                                fieldWithPath("invoiceDetails.lineItem.amount").description("This is line item amount/price"),
+//                                fieldWithPath("invoiceDetails.totalPrice").description("Total price of the line item"),
+//
+//                                       fieldWithPath("status").description("Total price of the line item")),
+//
+//                                        responseFields(
+//                                        fieldWithPath("invoiceId").description("Internal ID of the added invoice"),
+//                fieldWithPath("company").description("Line Item details"),
+//                fieldWithPath("company.Id").description("invoice to which the Line Item details added"),
+//                fieldWithPath("company.Name").description("Internal ID of the added line item"),
+//                fieldWithPath("company.Address").description("Description of the line Item"),
+//                fieldWithPath("company.Contact").description("Fee type is either Flat Fee or Rate based fee"),
+//                fieldWithPath("company.Contact.Id").description("Line item quantity"),
+//                fieldWithPath("company.Contact.Name").description("Line item fee. This is Flat Fee/ Rate based fee"),
+//                fieldWithPath("company.Contact.Title").description("This is line item amount/price"),
+//                fieldWithPath("company.Contact.PhoneNumber").description("Total price of the line item"),
+//        fieldWithPath("invoiceDate").description("Total price of the line item"),
+//        fieldWithPath("modifiedDate").description("Total price of the line item"),
+//        fieldWithPath("cost").description("Total price of the line item"),
+//        fieldWithPath("invoiceDetailsList").description("Total price of the line item"),
+//                                                fieldWithPath("invoiceDetails").description("Total price of the line item"),
+//
+//                                                fieldWithPath("invoiceDetails.invoiceId").description("invoice to which the Line Item details added"),
+//                                                fieldWithPath("invoiceDetails.id").description("invoice to which the Line Item details added"),
+//                                                fieldWithPath("invoiceDetails.lineItem.id").description("Internal ID of the added line item"),
+//                                                fieldWithPath("invoiceDetails.lineItem.description").description("Description of the line Item"),
+//                                                fieldWithPath("invoiceDetails.lineItem.feeType").description("Fee type is either Flat Fee or Rate based fee"),
+//                                                fieldWithPath("invoiceDetails.lineItem.quantity").description("Line item quantity"),
+//                                                fieldWithPath("invoiceDetails.lineItem.fee").description("Line item fee. This is Flat Fee/ Rate based fee"),
+//                                                fieldWithPath("invoiceDetails.lineItem.amount").description("This is line item amount/price"),
+//                                                fieldWithPath("invoiceDetails.totalPrice").description("Total price of the line item"),
+//                                       fieldWithPath("status").description("Total price of the line item")
+//                        )));
+    }
+
+    @Test
+    void createNewInvoiceWithItems() throws Exception{
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+        List<Items> itemsList = new ArrayList<>();
+        itemsList.add (new Items(1,"item1",'R',5,10.0,0.0));
+        itemsList.add (new Items(2,"item2",'F',0,0.0,20.0));
+        List<InvoiceDetails> invoiceDetailsList = new ArrayList<>();
+        invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee()));
+        //invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(1),itemsList.get(1).getAmount()));
+        Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.of (2021,07,12) ,70.0, invoiceDetailsList );
+        Map<String, Object> requestBody= new HashMap<>();
+        requestBody.put("company", invoice.getCompany());
+        requestBody.put("invoiceDate", invoice.getInvoiceDate());
+        requestBody.put("status", invoice.getStatus());
+        requestBody.put("modifiedDate", invoice.getModifiedDate());
+        requestBody.put("cost", invoice.getCost());
+        requestBody.put("invoiceDetails", invoiceDetailsList);
+
+//        doAnswer(invocation ->{
+//            <InvoiceDetails invoiceDetails=invocation.getArgument(0);
+//            invoiceDetails.setId(1);
+//            invoiceDetails.setInvoiceId(1);
+//            return invoiceDetails;
+//        }).when(repo).save(isA(InvoiceDetails.class));
+
+        doAnswer(invocation ->{
+            List <InvoiceDetails> invoiceDetailsList1=invocation.getArgument(0);
+            invoiceDetailsList1.get(0).setId(1);
+            invoiceDetailsList1.get(1).setId(2);
+            invoiceDetailsList1.get(0).setInvoiceId(1);
+            invoiceDetailsList1.get(1).setInvoiceId(1);
+            return invoiceDetailsList1;
+        }).when(repo).saveAll(anyList());
+
+        doAnswer(invocation ->{
+            Invoice inv=invocation.getArgument(0);
+            inv.setInvoiceId(1);
+            return inv;
+        }).when(invoiceRepository).save(isA(Invoice.class));
+
+        mvc.perform(post("/createNewInvoice")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("invoiceId").value(1))
+                .andExpect(jsonPath("cost").value(70.0));
 //                .andDo(document("Add Invoice POST"
 //                                , requestFields(
 //                                        fieldWithPath("company").description("Line Item details"),

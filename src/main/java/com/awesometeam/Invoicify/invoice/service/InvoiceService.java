@@ -23,7 +23,15 @@ public class InvoiceService {
 
     public Invoice createNewInvoices(Invoice invoice)
     {
-               return invoiceRepository.save(invoice);
+        Invoice invoice1 = invoiceRepository.save(invoice);
+
+        if(invoice.getInvoiceDetailsList() != null && invoice.getInvoiceDetailsList().size() !=0){
+             for (InvoiceDetails invoiceDetails: invoice.getInvoiceDetailsList()) {
+                    invoiceDetails.setInvoiceId(invoice1.getInvoiceId());
+                     addNewLineItem(invoiceDetails);
+                 }
+            }
+               return invoice1;
     }
 
     public InvoiceDetails addNewLineItem(InvoiceDetails invoiceDetails)
@@ -42,7 +50,7 @@ public class InvoiceService {
         double total = 0.0;
         double prirorTotal = invoiceDetailsRepository.getCost(invoiceDetails.getInvoiceId());
         System.out.println(prirorTotal);
-        if (prirorTotal == 0.0 )
+        if (prirorTotal != 0.0 )
         {
              total += invoiceDetailsRepository.getCost(invoiceDetails.getInvoiceId());
 
@@ -54,5 +62,9 @@ public class InvoiceService {
     public Invoice findByInvoiceId(long invoiceId) {
         Optional<Invoice> invoice = invoiceRepository.findById(invoiceId);
         return invoice.get();
+    }
+
+    public Invoice modifyInvoice(Invoice invoice,long invoiceId) {
+        return invoice;
     }
 }

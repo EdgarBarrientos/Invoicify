@@ -6,6 +6,7 @@ import com.awesometeam.Invoicify.invoice.service.InvoiceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.*;
 
 @RestController
 public class InvoiceController {
@@ -19,6 +20,14 @@ public class InvoiceController {
     public ResponseEntity createNewInvoice(@RequestBody Invoice invoice){
         invoiceService.createNewInvoices(invoice);
         return new ResponseEntity(invoice, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/invoice/{invoiceId}")
+    public ResponseEntity modifyInvoice(@PathVariable long invoiceId, @RequestBody Invoice invoice){
+        Invoice result=invoiceService.modifyInvoice(invoice,invoiceId).orElse(null);
+            if(result != null)
+               return new ResponseEntity(invoice, HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/addInvoiceItem")

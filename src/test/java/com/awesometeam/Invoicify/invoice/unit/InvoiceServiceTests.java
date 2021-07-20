@@ -45,7 +45,7 @@ public class InvoiceServiceTests {
         itemsList.add (new Items(2,"item2",'F',0,0.0,20.0));
 
         Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
-                ,"Unpaid",LocalDate.of (2021,07,12) ,0.0, null );
+                ,"UnPaid",LocalDate.of (2021,07,12) ,0.0, null );
 
         Map<String, Object> requestBody= new HashMap<>();
 
@@ -73,7 +73,7 @@ public class InvoiceServiceTests {
         invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee()));
         invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(1),itemsList.get(1).getAmount()));
         Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
-                ,"Unpaid",LocalDate.of (2021,07,12) ,0.0, invoiceDetailsList );
+                ,"UnPaid",LocalDate.of (2021,07,12) ,0.0, invoiceDetailsList );
 
         Map<String, Object> requestBody= new HashMap<>();
 
@@ -103,7 +103,7 @@ public class InvoiceServiceTests {
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
         Invoice invoice=new Invoice(1,company, LocalDate.of(2021,07,12)
-                ,"Unpaid",LocalDate.of (2021,07,12) ,0.0, null );
+                ,"UnPaid",LocalDate.of (2021,07,12) ,0.0, null );
         when(invoiceDetailsRepository.save(invoiceDetails)).thenReturn(invoiceDetails);
         InvoiceDetails actual = invoiceService.addNewLineItem(invoiceDetails);
         assertEquals(invoiceDetails, actual);
@@ -119,7 +119,7 @@ public class InvoiceServiceTests {
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
         Invoice invoice=new Invoice(1,company, LocalDate.of(2021,07,12)
-                ,"Unpaid",LocalDate.of (2021,07,12) ,0.0, null );
+                ,"UnPaid",LocalDate.of (2021,07,12) ,0.0, null );
         when(invoiceDetailsRepository.save(invoiceDetails)).thenReturn(invoiceDetails);
         InvoiceDetails actual = invoiceService.addNewLineItem(invoiceDetails);
         assertEquals(invoiceDetails, actual);
@@ -130,7 +130,7 @@ public class InvoiceServiceTests {
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
         Invoice invoice=new Invoice(1,company, LocalDate.of(2021,07,12)
-                ,"Unpaid",LocalDate.of (2021,07,12) ,1.0, null );
+                ,"UnPaid",LocalDate.of (2021,07,12) ,1.0, null );
 
         when(invoiceRepository.findById(1L)).thenReturn(Optional.of(invoice));
 
@@ -139,12 +139,13 @@ public class InvoiceServiceTests {
         assertEquals(actual,invoice);
 
     }
+
     @Test
     void findInvoiceByInvoiceIdReturnsNotFoundTest() throws Exception {
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
         Invoice invoice=new Invoice(1,company, LocalDate.of(2021,07,12)
-                ,"Unpaid",LocalDate.of (2021,07,12) ,1.0, null );
+                ,"UnPaid",LocalDate.of (2021,07,12) ,1.0, null );
 
         when(invoiceRepository.findById(2L)).thenReturn(Optional.of(invoice));
 
@@ -154,56 +155,103 @@ public class InvoiceServiceTests {
 
 
     }
+
     @Test
     void modifyInvoiceDateTest()
     {
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
-
+        Invoice existingInvoice=new Invoice(1,company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.now() ,1.0, null );
         Invoice invoice=new Invoice(1,company, LocalDate.of(2021,07,12)
-                ,"Unpaid",LocalDate.of (2021,07,12) ,1.0, null );
-        Invoice invoice1=new Invoice(1,null, LocalDate.of(2021,12,12)
+                ,"UnPaid",LocalDate.now() ,1.0, null );
+        Invoice invoice1=new Invoice(null, LocalDate.of(2021,12,12)
                 ,null,null ,0.0, null );
 
         when(invoiceRepository.findById(isA(Long.class)))
-                .thenReturn(Optional.of(invoice))
-                .thenReturn(Optional.ofNullable(null));
+                .thenReturn(Optional.ofNullable(existingInvoice),Optional.of(invoice));
         Invoice result = invoiceService.modifyInvoice(invoice1,1).orElse(null);
         assertEquals(invoice,result);
     }
+
     @Test
     void modifyInvoiceStatusTest()
     {
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
-
+        Invoice existingInvoice=new Invoice(1,company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.now() ,1.0, null );
         Invoice invoice=new Invoice(1,company, LocalDate.of(2021,07,12)
-                ,"paid",LocalDate.of (2021,07,12) ,1.0, null );
-        Invoice invoice1=new Invoice(1,null, null
-                ,"paid",null ,0.0, null );
+                ,"Paid",LocalDate.now()  ,1.0, null );
+        Invoice invoice1=new Invoice(null, null
+                ,"Paid",null ,0.0, null );
 
         when(invoiceRepository.findById(isA(Long.class)))
-                .thenReturn(Optional.of(invoice))
-                .thenReturn(Optional.ofNullable(null));
+                .thenReturn(Optional.of(existingInvoice),Optional.ofNullable(invoice));
         Invoice result = invoiceService.modifyInvoice(invoice1,1).orElse(null);
-        assertEquals(invoice,result);
+
     }
+
     @Test
     void modifyInvoiceDateAndStatusTest()
     {
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
-
+        Invoice existingInvoice=new Invoice(1,company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.now() ,1.0, null );
         Invoice invoice=new Invoice(1,company, LocalDate.of(2021,07,12)
-                ,"paid",LocalDate.of (2021,07,12) ,1.0, null );
-        Invoice invoice1=new Invoice(1,null, LocalDate.of(2021,12,12)
-                ,"paid",null ,0.0, null );
+                ,"Paid",LocalDate.now() ,1.0, null );
+        Invoice invoice1=new Invoice(null, LocalDate.of(2021,12,12)
+                ,"Paid",null ,0.0, null );
+
+        when(invoiceRepository.findById(isA(Long.class)))
+                .thenReturn(Optional.of(existingInvoice),Optional.of(invoice));
+
+        Invoice result = invoiceService.modifyInvoice(invoice1,1).orElse(null);
+        assertEquals(invoice,result);
+
+    }
+
+    @Test
+    void modifyInvoiceCompanyTest()
+    {
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+        Contact contact1 = new Contact("Person3","Sales Rep","111-222-3333");
+        Company company1=new Company("XYZ .inc","678 Street, New York,NY", contact1);
+        Invoice existingInvoice=new Invoice(1,company, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.now() ,1.0, null );
+        Invoice invoice=new Invoice(1,company1, LocalDate.of(2021,07,12)
+                ,"Unpaid",LocalDate.now() ,1.0, null );
+        Invoice invoice1=new Invoice( company1,null,null,null ,0.0, null );
+
+
+        when(invoiceRepository.findById(isA(Long.class)))
+                .thenReturn(Optional.of(existingInvoice),Optional.of(invoice));
+
+        Invoice result = invoiceService.modifyInvoice(invoice1,1).orElse(null);
+        assertEquals(invoice,result);
+
+    }
+
+    @Test
+    void modifyInvoiceAlreadyInPaidStatusTest()
+    {
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+        Contact contact1 = new Contact("Person3","Sales Rep","111-222-3333");
+        Company company1=new Company("XYZ .inc","678 Street, New York,NY", contact1);
+        Invoice invoice=new Invoice(1,company1, LocalDate.of(2021,07,12)
+                ,"Paid",LocalDate.now() ,1.0, null );
+        Invoice invoice1=new Invoice( company1,null,null,null ,0.0, null );
 
         when(invoiceRepository.findById(isA(Long.class)))
                 .thenReturn(Optional.of(invoice))
                 .thenReturn(Optional.ofNullable(null));
+
         Invoice result = invoiceService.modifyInvoice(invoice1,1).orElse(null);
-        assertEquals(invoice,result);
+        assertNull(result);
+
         result = invoiceService.modifyInvoice(invoice1,12).orElse(null);
         assertNull(result);
     }

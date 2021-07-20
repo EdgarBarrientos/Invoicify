@@ -17,8 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.*;
-
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
@@ -49,12 +47,12 @@ public class InvoiceApiTests {
         Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
                 ,"Unpaid",LocalDate.of (2021,07,12) ,70.0, invoiceDetailsList );
         Map<String, Object> requestBody= new HashMap<>();
-        requestBody.put("company", invoice.getCompany());
-        requestBody.put("invoiceDate", invoice.getInvoiceDate());
-        requestBody.put("status", invoice.getStatus());
-        requestBody.put("modifiedDate", invoice.getInvoiceDate());
-        requestBody.put("cost", invoice.getCost());
-        requestBody.put("invoiceDetails", invoiceDetailsList);
+        requestBody.put("Company", invoice.getCompany());
+        requestBody.put("InvoiceDate", invoice.getInvoiceDate());
+        requestBody.put("Status", invoice.getStatus());
+        requestBody.put("ModifiedDate", invoice.getInvoiceDate());
+        requestBody.put("Cost", invoice.getCost());
+        requestBody.put("InvoiceDetails", invoiceDetailsList);
 
         doAnswer(invocation ->{
             Invoice inv=invocation.getArgument(0);
@@ -66,8 +64,8 @@ public class InvoiceApiTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("invoiceId").value(1))
-                .andExpect(jsonPath("cost").value(70.0));
+                .andExpect(jsonPath("InvoiceId").value(1))
+                .andExpect(jsonPath("Cost").value(70.0));
     }
 
     @Test
@@ -80,9 +78,9 @@ public class InvoiceApiTests {
         InvoiceDetails invoiceDetails = new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getAmount());
 
         Map<String, Object> requestBody= new HashMap<>();
-        requestBody.put("invoiceId", invoiceDetails.getInvoiceId());
-        requestBody.put("lineItem", invoiceDetails.getLineItem());
-        requestBody.put("totalPrice", invoiceDetails.getTotalPrice());
+        requestBody.put("InvoiceId", invoiceDetails.getInvoiceId());
+        requestBody.put("Items", invoiceDetails.getLineItem());
+        requestBody.put("TotalPrice", invoiceDetails.getTotalPrice());
 
 
         doAnswer(invocation -> {
@@ -111,9 +109,9 @@ public class InvoiceApiTests {
         InvoiceDetails invoiceDetails = new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee());
 
         Map<String, Object> requestBody= new HashMap<>();
-        requestBody.put("invoiceId", invoiceDetails.getInvoiceId());
-        requestBody.put("lineItem", invoiceDetails.getLineItem());
-        requestBody.put("totalPrice", invoiceDetails.getTotalPrice());
+        requestBody.put("InvoiceId", invoiceDetails.getInvoiceId());
+        requestBody.put("Items", invoiceDetails.getLineItem());
+        requestBody.put("TotalPrice", invoiceDetails.getTotalPrice());
 
         doAnswer(invocation -> {
             InvoiceDetails invoiceDetails1 = invocation.getArgument(0);
@@ -125,7 +123,6 @@ public class InvoiceApiTests {
             return invoiceDetails1;
         }).when(invoiceservice).addNewLineItem(isA(InvoiceDetails.class));
 
-        //when(service.addNewLineItem(invoiceDetails)).thenReturn(invoiceDetails);
         this.mvc.perform(post("/addInvoiceItem")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)))
@@ -143,15 +140,15 @@ public class InvoiceApiTests {
 
         mvc.perform(get("/invoice/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("invoiceId").value(1))
-                .andExpect(jsonPath("status").value("Unpaid"))
-                .andExpect(jsonPath("$.company.Name").value("ABC..inc"))
-                .andExpect(jsonPath("cost").value(1.0));
+                .andExpect(jsonPath("InvoiceId").value(1))
+                .andExpect(jsonPath("Status").value("Unpaid"))
+                .andExpect(jsonPath("$.Company.Name").value("ABC..inc"))
+                .andExpect(jsonPath("Cost").value(1.0));
 
     }
 
     @Test
-    void modifyInvoiceTest() throws Exception{
+    void modifyInvoiceWithUnpaidStatusTest() throws Exception{
         Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
         Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
         List<Items> itemsList = new ArrayList<>();
@@ -161,15 +158,9 @@ public class InvoiceApiTests {
         invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee()));
         invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(1),itemsList.get(1).getAmount()));
 
-        List<InvoiceDetails> invoiceDetailsList1 = new ArrayList<>();
-        invoiceDetailsList1.add(new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee()));
-        invoiceDetailsList1.add(new InvoiceDetails(1, itemsList.get(1),itemsList.get(1).getAmount()));
-        invoiceDetailsList1.add(new InvoiceDetails(1, itemsList.get(1),itemsList.get(1).getAmount()));
-
         Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
                 ,"Unpaid",LocalDate.of (2021,07,12) ,70.0, invoiceDetailsList );
         invoice.setInvoiceId(1);
-
 
         doAnswer(invocation ->{
             Invoice inv=invocation.getArgument(0);
@@ -177,52 +168,133 @@ public class InvoiceApiTests {
             Invoice result=null;
             if(index == 1){
                 result = new Invoice(invoice.getCompany(),invoice.getInvoiceDate(),
-                        invoice.getStatus(),invoice.getModifiedDate(),invoice.getCost(),
+                        invoice.getStatus(),LocalDate.now(),invoice.getCost(),
                         invoice.getInvoiceDetailsList());
                 result.setInvoiceId(1);
-                System.out.println(objectMapper.writeValueAsString(inv));
-                if(inv.getInvoiceDate() != null){
-                    result.setInvoiceDate(inv.getInvoiceDate());
-                }
-                if(inv.getStatus() != null){
-                    result.setStatus(inv.getStatus());
-                }
-//                if(inv.getInvoiceDetailsList() != null && inv.getInvoiceDetailsList().size() != 0){
-//
-//                    result.setInvoiceDetailsList(inv.getInvoiceDetailsList());
-//                }
+               if(result.getStatus() !="Paid") {
+                   if (inv.getInvoiceDate() != null) {
+                       result.setInvoiceDate(inv.getInvoiceDate());
+                   }
+                   if (inv.getStatus() != null) {
+                       result.setStatus(inv.getStatus());
+                   }
+                   if (inv.getStatus() != null && inv.getInvoiceDate() != null) {
+                       result.setStatus(inv.getStatus());
+                       result.setInvoiceDate(inv.getInvoiceDate());
+                   }
+                   if (inv.getCompany() != null) {
+                       result.setCompany(inv.getCompany());
+                   }
+               }
             }
             return Optional.ofNullable(result);
 
         }).when(invoiceservice).modifyInvoice(isA(Invoice.class),isA(long.class));
 
+        String CurrentDate= LocalDate.now().toString();
         Map<String, Object> requestBody= new HashMap<>();
-        requestBody.put("invoiceDate",LocalDate.of(2021,07,17) );
+        requestBody.put("InvoiceDate",LocalDate.of(2021,07,17) );
+
         mvc.perform(patch("/invoice/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("invoiceId").value(1))
-                .andExpect(jsonPath("invoiceDate").value("2021-07-17"));
+                .andExpect(jsonPath("InvoiceId").value(1))
+                .andExpect(jsonPath("InvoiceDate").value("2021-07-17"))
+                .andExpect(jsonPath("ModifiedDate").value(CurrentDate));
 
         Map<String, Object> requestBody1= new HashMap<>();
-        requestBody1.put("status","paid" );
+        requestBody1.put("Status","Paid" );
         mvc.perform(patch("/invoice/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody1)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("invoiceId").value(1))
-                .andExpect(jsonPath("status").value("paid"));
+                .andExpect(jsonPath("InvoiceId").value(1))
+                .andExpect(jsonPath("Status").value("Paid"))
+                .andExpect(jsonPath("ModifiedDate").value(CurrentDate));
 
-//        Map<String, Object> requestBody2= new HashMap<>();
-//        requestBody.put("invoiceDetailList",invoiceDetailsList1 );
-//        System.out.println(requestBody.get("invoiceDetailList"));
-//        mvc.perform(patch("/invoice/1")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(requestBody2)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("invoiceId").value(1))
-//                .andExpect(jsonPath("invoiceDetailsList" ,hasSize(3)));
+        Map<String, Object> requestBody2= new HashMap<>();
+        requestBody2.put("Status","Paid" );
+        requestBody2.put("InvoiceDate",LocalDate.of(2021,07,17) );
+        mvc.perform(patch("/invoice/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody2)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("InvoiceId").value(1))
+                .andExpect(jsonPath("Status").value("Paid"))
+                .andExpect(jsonPath("InvoiceDate").value("2021-07-17"))
+                .andExpect(jsonPath("ModifiedDate").value(CurrentDate));
 
+        Map<String, Object> requestBody3= new HashMap<>();
+        Contact contact1 = new Contact("Person3","Sales Rep","111-222-3333");
+        Company company1=new Company("XYZ .inc","678 Street, New York,NY", contact1);
+        requestBody3.put("Company",company1 );
+        requestBody3.put("InvoiceDate",LocalDate.of(2021,07,17) );
+        mvc.perform(patch("/invoice/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody3)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("InvoiceId").value(1))
+                .andExpect(jsonPath("Company").value(company1))
+                .andExpect(jsonPath("ModifiedDate").value(CurrentDate));
     }
+
+    @Test
+    void modifyInvoiceWithPaidStatusTest() throws Exception{
+        Contact contact = new Contact("Person1","Sales Rep","111-222-3333");
+        Company company=new Company("ABC..inc","123 Street, Phoenix,AZ", contact);
+        List<Items> itemsList = new ArrayList<>();
+        itemsList.add (new Items(1,"item1",'R',5,10.0,0.0));
+        itemsList.add (new Items(2,"item2",'F',0,0.0,20.0));
+        List<InvoiceDetails> invoiceDetailsList = new ArrayList<>();
+        invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(0),itemsList.get(0).getQuantity() * itemsList.get(0).getFee()));
+        invoiceDetailsList.add(new InvoiceDetails(1, itemsList.get(1),itemsList.get(1).getAmount()));
+
+        Invoice invoice=new Invoice(company, LocalDate.of(2021,07,12)
+                ,"Paid",null,70.0, invoiceDetailsList );
+        invoice.setInvoiceId(1);
+
+        doAnswer(invocation ->{
+            Invoice inv=invocation.getArgument(0);
+            Long index= invocation.getArgument(1);
+            Invoice result=null;
+            if(index == 1){
+                result = new Invoice(invoice.getCompany(),invoice.getInvoiceDate(),
+                        invoice.getStatus(),null,invoice.getCost(),
+                        invoice.getInvoiceDetailsList());
+                result.setInvoiceId(1);
+                if(result.getStatus() !="Paid") {
+                    if (inv.getInvoiceDate() != null) {
+                        result.setInvoiceDate(inv.getInvoiceDate());
+                    }
+                    if (inv.getStatus() != null) {
+                        result.setStatus(inv.getStatus());
+                    }
+                    if (inv.getStatus() != null && inv.getInvoiceDate() != null) {
+                        result.setStatus(inv.getStatus());
+                        result.setInvoiceDate(inv.getInvoiceDate());
+                    }
+                    if (inv.getCompany() != null) {
+                        result.setCompany(inv.getCompany());
+                    }
+                }
+            }
+            return Optional.ofNullable(result);
+
+        }).when(invoiceservice).modifyInvoice(isA(Invoice.class),isA(long.class));
+
+        Map<String, Object> requestBody3= new HashMap<>();
+        Contact contact1 = new Contact("Person3","Sales Rep","111-222-3333");
+        Company company1=new Company("XYZ .inc","678 Street, New York,NY", contact1);
+        requestBody3.put("Company",company1 );
+        requestBody3.put("InvoiceDate",LocalDate.of(2021,07,17) );
+        mvc.perform(patch("/invoice/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody3)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("InvoiceId").value(1))
+                .andExpect(jsonPath("Company").value(company))
+                .andExpect(jsonPath("ModifiedDate").doesNotExist());
+    }
+
 }

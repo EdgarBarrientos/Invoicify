@@ -1,5 +1,6 @@
 package com.awesometeam.Invoicify.invoice.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,7 @@ public class Items
         this.fee = fee;
         this.amount = amount;
     }
-
+    @JsonProperty("Id")
     public long getId() {
         return id;
     }
@@ -40,7 +41,7 @@ public class Items
     public void setId(long id) {
         this.id = id;
     }
-
+    @JsonProperty("Description")
     public String getDescription() {
         return description;
     }
@@ -48,7 +49,7 @@ public class Items
     public void setDescription(String description) {
         this.description = description;
     }
-
+    @JsonProperty("FeeType")
     public char getFeeType() {
         return feeType;
     }
@@ -56,7 +57,7 @@ public class Items
     public void setFeeType(char feeType) {
         this.feeType = feeType;
     }
-
+    @JsonProperty("Quantity")
     public int getQuantity() {
         return quantity;
     }
@@ -64,7 +65,7 @@ public class Items
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-
+    @JsonProperty("Fee")
     public Double getFee() {
         return fee;
     }
@@ -72,7 +73,7 @@ public class Items
     public void setFee(Double fee) {
         this.fee = fee;
     }
-
+    @JsonProperty("Amount")
     public Double getAmount() {
         return amount;
     }

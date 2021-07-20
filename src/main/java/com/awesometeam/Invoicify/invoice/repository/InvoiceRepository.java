@@ -1,5 +1,6 @@
 package com.awesometeam.Invoicify.invoice.repository;
 
+import com.awesometeam.Invoicify.company.model.Company;
 import com.awesometeam.Invoicify.invoice.model.Invoice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,16 +19,21 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>
 
     @Transactional
     @Modifying
-    @Query("update Invoice inv set inv.invoiceDate = :invoiceDate where inv.invoiceId = :invoiceId")
-    void updateInvoiceDate(@Param("invoiceDate") LocalDate invoiceDate,@Param("invoiceId") long invoiceId);
+    @Query("update Invoice inv set inv.invoiceDate = :invoiceDate, inv.modifiedDate=:modifiedDate where inv.invoiceId = :invoiceId")
+    void updateInvoiceDate(@Param("invoiceDate") LocalDate invoiceDate,@Param("modifiedDate") LocalDate modifiedDate,@Param("invoiceId") long invoiceId);
 
     @Transactional
     @Modifying
-    @Query("update Invoice inv set inv.Status = :status where inv.invoiceId = :invoiceId")
-  void updateInvoiceStatus(@Param("status") String status,@Param("invoiceId") long invoiceId);
+    @Query("update Invoice inv set inv.Status = :status ,inv.modifiedDate=:modifiedDate where inv.invoiceId = :invoiceId")
+  void updateInvoiceStatus(@Param("status") String status, @Param("modifiedDate") LocalDate modifiedDate,@Param("invoiceId") long invoiceId);
 
     @Transactional
     @Modifying
-    @Query("update Invoice inv set inv.Status = :status , inv.invoiceDate = :invoiceDate where inv.invoiceId = :invoiceId")
-  void updateInvoiceDateAndStatus(@Param("status")String status,@Param("invoiceDate")  LocalDate invoiceDate, @Param("invoiceId")long invoiceId);
+    @Query("update Invoice inv set inv.Status = :status , inv.invoiceDate = :invoiceDate,inv.modifiedDate=:modifiedDate where inv.invoiceId = :invoiceId")
+  void updateInvoiceDateAndStatus(@Param("status")String status,@Param("invoiceDate")  LocalDate invoiceDate,@Param("modifiedDate") LocalDate modifiedDate, @Param("invoiceId")long invoiceId);
+
+    @Transactional
+    @Modifying
+    @Query("update Invoice inv set inv.company = :company , inv.modifiedDate=:modifiedDate where inv.invoiceId = :invoiceId")
+    void updateCompany(@Param("company")Company company,@Param("modifiedDate") LocalDate modifiedDate, @Param("invoiceId")long invoiceId);
 }

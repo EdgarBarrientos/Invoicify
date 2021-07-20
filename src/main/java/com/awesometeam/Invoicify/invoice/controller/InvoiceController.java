@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +28,15 @@ public class InvoiceController {
     public ResponseEntity createNewInvoice(@RequestBody Invoice invoice){
         invoiceService.createNewInvoices(invoice);
         return new ResponseEntity(invoice, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/invoice/{invoiceId}")
+    public ResponseEntity modifyInvoice( @RequestBody Invoice invoice,@PathVariable long invoiceId){
+
+            Invoice result=invoiceService.modifyInvoice(invoice,invoiceId).orElse(null);
+             if(result != null)
+               return new ResponseEntity(result, HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/addInvoiceItem")

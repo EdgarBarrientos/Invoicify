@@ -96,8 +96,7 @@ public class MockRepoTest {
                                 fieldWithPath("Contact.Title").description("The name for the contact added for the company"),
                                 fieldWithPath("Contact.PhoneNumber").description("The name for the contact added for the company")
 
-
-                        )
+                       )
                         )
                 );
 

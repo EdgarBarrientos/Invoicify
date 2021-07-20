@@ -1,5 +1,6 @@
 package com.awesometeam.Invoicify.invoice.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,7 +24,7 @@ public class InvoiceDetails
         this.lineItem = lineItem;
         this.totalPrice = totalPrice;
     }
-
+    @JsonProperty("Id")
     public long getId() {
         return id;
     }
@@ -31,7 +32,7 @@ public class InvoiceDetails
     public void setId(long id) {
         this.id = id;
     }
-
+    @JsonProperty("InvoiceId")
     public long getInvoiceId() {
         return invoiceId;
     }
@@ -39,7 +40,7 @@ public class InvoiceDetails
     public void setInvoiceId(long invoiceId) {
         this.invoiceId = invoiceId;
     }
-
+    @JsonProperty("Items")
     public Items getLineItem() {
         return lineItem;
     }
@@ -48,6 +49,7 @@ public class InvoiceDetails
         this.lineItem = lineItem;
     }
 
+    @JsonProperty("TotalPrice")
     public Double getTotalPrice() {
         return totalPrice;
     }

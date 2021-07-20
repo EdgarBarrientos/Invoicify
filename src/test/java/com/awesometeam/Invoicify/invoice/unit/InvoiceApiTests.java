@@ -347,13 +347,12 @@ public class InvoiceApiTests {
 
         mvc.perform(get("/invoiceByCompany/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].id").value(dtoInvoiceDetails.get(0).getId().toString()))
                 .andExpect(jsonPath("$.content[0].createDate").value(dtoInvoiceDetails.get(0).getCreateDate().toString()))
                 .andExpect(jsonPath("$.content[0].total").value(dtoInvoiceDetails.get(0).getTotal()))
                 .andExpect(jsonPath("$.content[0].paidStatus").value(dtoInvoiceDetails.get(0).getPaidStatus()))
-                .andExpect(jsonPath("$.content[0].itemsDetails[0].lineItem.description").value("item1"))
-                .andExpect(jsonPath("$.content[0].itemsDetails[0].lineItem.feeType").value("F"))
-                .andExpect(jsonPath("$.content[0].itemsDetails[0].lineItem.quantity").value(0))
+                .andExpect(jsonPath("$.content[0].itemsDetails[0].Items.Description").value("item1"))
+                .andExpect(jsonPath("$.content[0].itemsDetails[0].Items.FeeType").value("F"))
+                .andExpect(jsonPath("$.content[0].itemsDetails[0].Items.Quantity").value(0))
                 .andExpect(jsonPath("content.length()").value(listOfInvoices.size()));
     }
 

@@ -448,10 +448,10 @@ public class InvoiceIntegrationTests {
                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isNotFound());
 
-                .andExpect(jsonPath("invoiceId").value(1))
-                .andExpect(jsonPath("status").value("Unpaid"))
-                .andExpect(jsonPath("$.company.Name").value("ABC..inc"))
-                .andExpect(jsonPath("cost").value(1.0));
+//                .andExpect(jsonPath("invoiceId").value(1))
+//                .andExpect(jsonPath("status").value("Unpaid"))
+//                .andExpect(jsonPath("$.company.Name").value("ABC..inc"))
+//                .andExpect(jsonPath("cost").value(1.0));
    }
 
     @Test
@@ -496,14 +496,13 @@ public class InvoiceIntegrationTests {
 
             mvc.perform(get("/invoiceByCompany/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].id").value(dtoInvoiceDetails.get(0).getId().toString()))
-                .andExpect(jsonPath("$.content[0].createDate").value(dtoInvoiceDetails.get(0).getCreateDate().toString()))
-                .andExpect(jsonPath("$.content[0].total").value(dtoInvoiceDetails.get(0).getTotal()))
-                .andExpect(jsonPath("$.content[0].paidStatus").value(dtoInvoiceDetails.get(0).getPaidStatus()))
-                .andExpect(jsonPath("$.content[0].itemsDetails[0].lineItem.description").value("item1"))
-                .andExpect(jsonPath("$.content[0].itemsDetails[0].lineItem.feeType").value("F"))
-                .andExpect(jsonPath("$.content[0].itemsDetails[0].lineItem.quantity").value(0))
-                .andExpect(jsonPath("content.length()").value(listOfInvoices.size()));
+                    .andExpect(jsonPath("$.content[0].createDate").value(dtoInvoiceDetails.get(0).getCreateDate().toString()))
+                    .andExpect(jsonPath("$.content[0].total").value(dtoInvoiceDetails.get(0).getTotal()))
+                    .andExpect(jsonPath("$.content[0].paidStatus").value(dtoInvoiceDetails.get(0).getPaidStatus()))
+                    .andExpect(jsonPath("$.content[0].itemsDetails[0].Items.Description").value("item1"))
+                    .andExpect(jsonPath("$.content[0].itemsDetails[0].Items.FeeType").value("F"))
+                    .andExpect(jsonPath("$.content[0].itemsDetails[0].Items.Quantity").value(0))
+                    .andExpect(jsonPath("content.length()").value(listOfInvoices.size()));
 
     }
     @Test

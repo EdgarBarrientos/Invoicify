@@ -37,6 +37,24 @@ This project will run locally by doing the following:
 5. If the app runs in Heroku, add the following to Dockerfile:
   - RUN chmod +x ./gradlew
   
+#
+ This project will run from the Heroku and the links to acess different opeartions are below:
+
+  Add/ Create Company: https://invoicifyawesome.herokuapp.com/company
+
+  Get/ View all companies: https://invoicifyawesome.herokuapp.com/company
+
+  Update Company Infomation: https://invoicifyawesome.herokuapp.com/company/{companyId}
+
+  Add/Create new Invoice: https://invoicifyawesome.herokuapp.com/createNewInvoice
+
+  Modify Invoice: https://invoicifyawesome.herokuapp.com//invoice/{invoiceId}
+
+  Add line items to invoice: https://invoicifyawesome.herokuapp.com/addInvoiceItem
+
+  Find/Get Invoice by InvoiceId: https://invoicifyawesome.herokuapp.com/invoice/{invoiceId}
+
+  View a list of unpaid invoices by company: https://invoicifyawesome.herokuapp.com/invoiceByCompany/{companyId}
 
 
   

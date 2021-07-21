@@ -1,5 +1,18 @@
 = Invoice Details API
 
+=== Add Company
+
+.request
+include::{snippets}/company POST/http-request.adoc[]
+
+.request-fields
+include::{snippets}/company POST/request-fields.adoc[]
+
+.response
+include::{snippets}/company POST/http-response.adoc[]
+
+.response-fields
+
 === Add Line Item
 
 
@@ -16,3 +29,73 @@ include::{snippets}/Add Invoice Item POST/http-response.adoc[]
 include::{snippets}/Add Invoice Item POST/response-fields.adoc[]
 
 
+=== Find Invoice By InvoiceId
+
+.request
+include::{snippets}/Find Invoice By InvoiceId GET/http-request.adoc[]
+
+.request-fields
+include::{snippets}/Find Invoice By InvoiceId GET/request-fields.adoc[]
+
+.response
+include::{snippets}/Find Invoice By InvoiceId GET/http-response.adoc[]
+
+.response-fields
+include::{snippets}/Find Invoice By InvoiceId GET/response-fields.adoc[]
+
+=== Add Invoice Item
+
+.request
+include::{snippets}/Add Invoice Item/http-request.adoc[]
+
+.request-fields
+include::{snippets}/Add Invoice Item/request-fields.adoc[]
+
+.response
+include::{snippets}/Add Invoice Item/http-response.adoc[]
+
+.response-fields
+include::{snippets}/Add Invoice Item/response-fields.adoc[]
+
+=== Add Invoice Item with Rate POST
+
+.request
+include::{snippets}/Add Invoice Item with Rate POST/http-request.adoc[]
+
+.request-fields
+include::{snippets}/Add Invoice Item with Rate POST/request-fields.adoc[]
+
+.response
+include::{snippets}/Add Invoice Item with Rate POST/http-response.adoc[]
+
+.response-fields
+include::{snippets}/Add Invoice Item with Rate POST/response-fields.adoc[]
+
+
+=== Add Invoice Item with Flat Fee POST
+
+.request
+include::{snippets}/Add Invoice Item with Flat Fee POST/http-request.adoc[]
+
+.request-fields
+include::{snippets}/Add Invoice Item with Flat Fee POST/request-fields.adoc[]
+
+.response
+include::{snippets}/Add Invoice Item with Flat Fee POST/http-response.adoc[]
+
+.response-fields
+include::{snippets}/Add Invoice Item with Flat Fee POST/response-fields.adoc[]
+
+=== Get Invoice By Company ID
+
+.request
+include::{snippets}/Get Invoice By Company ID/http-request.adoc[]
+
+.request-fields
+include::{snippets}/Get Invoice By Company ID/request-fields.adoc[]
+
+.response
+include::{snippets}/Get Invoice By Company ID/http-response.adoc[]
+
+.response-fields
+include::{snippets}/Get Invoice By Company ID/response-fields.adoc[]

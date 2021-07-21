@@ -246,7 +246,7 @@ public class InvoiceIntegrationTests {
                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("TotalPrice").value(20))
-                .andDo(document("Add Invoice Item  with Flat Fee POST"
+                .andDo(document("Add Invoice Item with Flat Fee POST"
                         , requestFields(
                                         fieldWithPath("InvoiceId").description("invoiceId to which the Line Item details added"),
                                         fieldWithPath("Items.Id").description("Internal ID of the added line item"),
@@ -343,7 +343,26 @@ public class InvoiceIntegrationTests {
                 .andExpect(jsonPath("InvoiceId").value(1))
                 .andExpect(jsonPath("Status").value("Unpaid"))
                 .andExpect(jsonPath("$.Company.Name").value("ABC..inc"))
-                .andExpect(jsonPath("Cost").value(1.0));
+                .andExpect(jsonPath("Cost").value(1.0))
+                .andDo(document("Find Invoice By InvoiceId GET"
+                        , responseFields(
+                                fieldWithPath("InvoiceId").description("invoiceId to which the Line Item details added"),
+                                fieldWithPath("Company").description("Line Item details"),
+                                fieldWithPath("Company.Id").description("invoice to which the Line Item details added"),
+                                fieldWithPath("Company.Name").description("Internal ID of the added line item"),
+                                fieldWithPath("Company.Address").description("Description of the line Item"),
+                                fieldWithPath("Company.Contact").description("Fee type is either Flat Fee or Rate based fee"),
+                                fieldWithPath("Company.Contact.Id").description("Line item quantity"),
+                                fieldWithPath("Company.Contact.Name").description("Line item fee. This is Flat Fee/ Rate based fee"),
+                                fieldWithPath("Company.Contact.Title").description("This is line item amount/price"),
+                                fieldWithPath("Company.Contact.PhoneNumber").description("Total price of the line item"),
+                                fieldWithPath("InvoiceDate").description("Total price of the line item"),
+                                fieldWithPath("ModifiedDate").description("Total price of the line item"),
+                                fieldWithPath("Cost").description("Total price of the line item"),
+                                fieldWithPath("Status").description("Payment status of the invoice. Values are Paid/Unpaid"),
+                                fieldWithPath("InvoiceDetails").description("Invoice details such as line item details"))
+        ));
+
 
     }
 
@@ -503,6 +522,7 @@ public class InvoiceIntegrationTests {
                     .andExpect(jsonPath("$.content[0].itemsDetails[0].Items.FeeType").value("F"))
                     .andExpect(jsonPath("$.content[0].itemsDetails[0].Items.Quantity").value(0))
                     .andExpect(jsonPath("content.length()").value(listOfInvoices.size()));
+
 
     }
     @Test

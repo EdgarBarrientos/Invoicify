@@ -1,0 +1,271 @@
+{
+	"info": {
+		"_postman_id": "afbc7cfe-be05-4572-b064-b5048567b588",
+		"name": "Capstone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Company",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://invoicifyawesome.herokuapp.com/company",
+					"protocol": "https",
+					"host": [
+						"invoicifyawesome",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Invoice",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": {\r\n        \"Id\": 2,\r\n        \"Name\": \"Walmart inc.,\",\r\n        \"Address\": \"NewAddress\",\r\n        \"Contact\": {\r\n            \"Id\": 1,\r\n            \"Name\": \"John\",\r\n            \"Title\": \"Manager\",\r\n            \"PhoneNumber\": \"111-222-3333\"\r\n        }\r\n    },\r\n   \"invoiceDate\" : \"2021-06-16\",\r\n   \"status\" : \"unpaid\",\r\n   \"modifiedDate\": \"2021-07-02\",\r\n   \"cost\": 0,\r\n   \"invoiceDetailsList\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://invoicifyawesome.herokuapp.com/createNewInvoice",
+					"protocol": "https",
+					"host": [
+						"invoicifyawesome",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"createNewInvoice"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add invoiceDetails",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"Items\" :{\r\n    \"description\": \"item B\",\r\n    \"FeeType\" : \"R\",\r\n    \"Fee\": 50.0,\r\n    \"Quantity\": 3\r\n        }   ,\r\n    \"InvoiceId\": 21\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://invoicifyawesome.herokuapp.com/addInvoiceItem",
+					"protocol": "https",
+					"host": [
+						"invoicifyawesome",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"addInvoiceItem"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FInd invoicebyID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://invoicifyawesome.herokuapp.com/invoice/8",
+					"protocol": "https",
+					"host": [
+						"invoicifyawesome",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"invoice",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FindInvoicebyCOmpany",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://invoicifyawesome.herokuapp.com/invoiceByCompany",
+					"protocol": "https",
+					"host": [
+						"invoicifyawesome",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"invoiceByCompany"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetInvoiceId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://invoicifyawesome.herokuapp.com/invoice/21",
+					"protocol": "https",
+					"host": [
+						"invoicifyawesome",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"invoice",
+						"21"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://invoicifyawesome.herokuapp.com/deleteByInvoiceId/12",
+					"protocol": "https",
+					"host": [
+						"invoicifyawesome",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"deleteByInvoiceId",
+						"12"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Company",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n      \"Name\": \"Walmart\",\r\n    \"Contact\": {\r\n        \"Name\": \"John\",\r\n        \"Title\": \"Manager\",\r\n        \"PhoneNumber\": \"111-222-3333\"\r\n    },\r\n    \"Address\": \"123 Springfield\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://invoicifyawesome.herokuapp.com/company",
+					"protocol": "https",
+					"host": [
+						"invoicifyawesome",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Modify Company",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n        \"Id\": 2,\r\n        \"Name\": \"Costco\",\r\n        \"Address\": \"NewAddress\",\r\n        \"Contact\": {\r\n            \"Id\": 1,\r\n            \"Name\": \"Dave\",\r\n            \"Title\": \"Manager\",\r\n            \"PhoneNumber\": \"100-222-3333\"\r\n        }\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://invoicifyawesome.herokuapp.com/company/2",
+					"protocol": "https",
+					"host": [
+						"invoicifyawesome",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"company",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Modify invoice",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Company\": {\r\n        \"Id\": 2,\r\n        \"Name\": \"Costco\",\r\n        \"Address\": \"NewAddress\",\r\n        \"Contact\": {\r\n            \"Id\": 1,\r\n            \"Name\": \"Dave\",\r\n            \"Title\": \"Manager\",\r\n            \"PhoneNumber\": \"100-222-3333\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://invoicifyawesome.herokuapp.com/invoice/21",
+					"protocol": "https",
+					"host": [
+						"invoicifyawesome",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"invoice",
+						"21"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
